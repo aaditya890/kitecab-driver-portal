@@ -1,0 +1,103 @@
+src
+├── app
+│   ├── app.component.html
+│   ├── app.component.scss
+│   ├── app.component.spec.ts
+│   ├── app.component.ts
+│   ├── app.config.ts
+│   ├── app.routes.ts
+│   ├── modules
+│   │   ├── admin
+│   │   │   ├── admin.routes.ts
+│   │   │   ├── booking-details
+│   │   │   │   ├── booking-details.component.html
+│   │   │   │   ├── booking-details.component.scss
+│   │   │   │   ├── booking-details.component.spec.ts
+│   │   │   │   └── booking-details.component.ts
+│   │   │   ├── booking-list
+│   │   │   │   ├── booking-list.component.html
+│   │   │   │   ├── booking-list.component.scss
+│   │   │   │   ├── booking-list.component.spec.ts
+│   │   │   │   └── booking-list.component.ts
+│   │   │   ├── create-booking
+│   │   │   │   ├── create-booking.component.html
+│   │   │   │   ├── create-booking.component.scss
+│   │   │   │   ├── create-booking.component.spec.ts
+│   │   │   │   └── create-booking.component.ts
+│   │   │   ├── dashboard
+│   │   │   │   ├── dashboard.component.html
+│   │   │   │   ├── dashboard.component.scss
+│   │   │   │   ├── dashboard.component.spec.ts
+│   │   │   │   └── dashboard.component.ts
+│   │   │   └── login
+│   │   │       ├── login.component.html
+│   │   │       ├── login.component.scss
+│   │   │       ├── login.component.spec.ts
+│   │   │       └── login.component.ts
+│   │   └── driver
+│   │       ├── booking-details
+│   │       │   ├── booking-details.component.html
+│   │       │   ├── booking-details.component.scss
+│   │       │   ├── booking-details.component.spec.ts
+│   │       │   └── booking-details.component.ts
+│   │       ├── bookings
+│   │       │   ├── bookings.component.html
+│   │       │   ├── bookings.component.scss
+│   │       │   ├── bookings.component.spec.ts
+│   │       │   └── bookings.component.ts
+│   │       ├── dashboard
+│   │       │   ├── dashboard.component.html
+│   │       │   ├── dashboard.component.scss
+│   │       │   ├── dashboard.component.spec.ts
+│   │       │   └── dashboard.component.ts
+│   │       ├── driver.routes.ts
+│   │       ├── login
+│   │       │   ├── login.component.html
+│   │       │   ├── login.component.scss
+│   │       │   ├── login.component.spec.ts
+│   │       │   └── login.component.ts
+│   │       ├── profile
+│   │       │   ├── profile.component.html
+│   │       │   ├── profile.component.scss
+│   │       │   ├── profile.component.spec.ts
+│   │       │   └── profile.component.ts
+│   │       └── set-location
+│   │           ├── set-location.component.html
+│   │           ├── set-location.component.scss
+│   │           ├── set-location.component.spec.ts
+│   │           └── set-location.component.ts
+│   └── shared
+│       ├── components
+│       │   ├── header
+│       │   │   ├── header.component.html
+│       │   │   ├── header.component.scss
+│       │   │   ├── header.component.spec.ts
+│       │   │   └── header.component.ts
+│       │   └── loader
+│       │       ├── loader.component.html
+│       │       ├── loader.component.scss
+│       │       ├── loader.component.spec.ts
+│       │       └── loader.component.ts
+│       ├── guards
+│       │   ├── admin.guard.ts
+│       │   ├── approved-driver.guard.ts
+│       │   └── driver.guard.ts
+│       ├── interfaces
+│       │   ├── bid.interface.ts
+│       │   ├── booking.interface.ts
+│       │   ├── commission.interface.ts
+│       │   ├── driver.interface.ts
+│       │   └── user.interface.ts
+│       └── services
+│           ├── auth.service.ts
+│           ├── bid.service.ts
+│           ├── booking.service.ts
+│           ├── cloudinary.service.ts
+│           ├── driver.service.ts
+│           └── notification.service.ts
+├── assets
+│   └── .gitkeep
+├── favicon.ico
+├── index.html
+├── main.ts
+└── styles.scss
