@@ -3,37 +3,51 @@ import {
   signInWithPhoneNumber,
   RecaptchaVerifier,
   ConfirmationResult,
-  UserCredential
 } from 'firebase/auth';
 
 import { firebaseAuth } from '../../firebase.config';
+import { DriverService } from './driver.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private recaptcha!: RecaptchaVerifier;
-  private confirmation!: ConfirmationResult;
+  private recaptchaVerifier?: RecaptchaVerifier;
+  private confirmation?: ConfirmationResult;
 
-  constructor() {}
+  constructor(private driverService: DriverService) {}
 
-  // SEND OTP
-  async sendOtp(phone: string) {
-    this.recaptcha = new RecaptchaVerifier(
+  /** SEND OTP */
+  async sendOtp(phone: string): Promise<void> {
+
+    // Recaptcha create only once
+    if (!this.recaptchaVerifier) {
+       this.recaptchaVerifier = new RecaptchaVerifier(
       firebaseAuth,
       'recaptcha-container',
-      { size: 'invisible' }
+      {
+        size: 'normal'
+      }
     );
+    }
 
+    // Call Firebase OTP
     this.confirmation = await signInWithPhoneNumber(
       firebaseAuth,
       phone,
-      this.recaptcha
+      this.recaptchaVerifier
     );
   }
 
-  // VERIFY OTP
+  /** VERIFY OTP */
   async verifyOtp(code: string) {
-    return await this.confirmation.confirm(code);
-  }
+    if (!this.confirmation) throw new Error('Send OTP first.');
 
+    const result = await this.confirmation.confirm(code);
+    const fbUser = result.user;
+
+    // Driver fetch/create
+    const driver = await this.driverService.ensureDriverOnLogin(fbUser);
+
+    return driver;
+  }
 }
