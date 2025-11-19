@@ -1,9 +1,9 @@
 export const firebaseConfig = {
-  apiKey: "AIzaSyBvrecq3dGICJ8QvUK6S8zUF7FDATlj4zo",
-  authDomain: "kitecab-driver-portal.vercel.app",
-  projectId: "kitecab-driver-portal",
-  storageBucket: "kitecab-driver-portal.firebasestorage.app",
-  messagingSenderId: "1087843691650",
-  appId: "1:1087843691650:web:5b3b0b8fa6f094d522989b",
-  measurementId: "G-FW93XW6MS7"
+  apiKey: "AIzaSyD1CLSkHf8z1-S1nmHruqivMak9rh3WqzQ",
+  authDomain: "kitecab-driver-portal-9972a.firebaseapp.com",
+  projectId: "kitecab-driver-portal-9972a",
+  storageBucket: "kitecab-driver-portal-9972a.firebasestorage.app",
+  messagingSenderId: "1090857808044",
+  appId: "1:1090857808044:web:336f138c3c2477fa63af09",
+  measurementId: "G-1SVFLS006R"
 };

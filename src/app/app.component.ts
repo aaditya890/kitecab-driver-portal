@@ -7,14 +7,10 @@ import { firebaseAuth } from './firebase.config';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterLink, RouterOutlet],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'kitecab-driver-portal';
-
-  ngOnInit() {
-    console.log("Firebase Auth:", firebaseAuth);
-  }
 }
