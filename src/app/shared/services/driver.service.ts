@@ -5,6 +5,7 @@ import {
   setDoc,
   updateDoc,
   serverTimestamp,
+  Firestore,
 } from 'firebase/firestore';
 
 import { firebaseDb } from '../../firebase.config';
@@ -17,7 +18,7 @@ import { User as FirebaseUser } from 'firebase/auth';
 export class DriverService {
 
   private collectionName = 'drivers';
-
+constructor(private db: Firestore) {}
   // =======================================================
   // 🔍 GET EXISTING DRIVER BY UID
   // =======================================================
@@ -66,15 +67,38 @@ export class DriverService {
   // =======================================================
   // 🧠 ENSURE DRIVER EXISTS (Used during OTP login)
   // =======================================================
-  async ensureDriverOnLogin(fbUser: FirebaseUser): Promise<Driver> {
-    const existing = await this.getDriverById(fbUser.uid);
+  async ensureDriverOnLogin(user: FirebaseUser): Promise<Driver> {
 
-    if (existing) {
-      return existing;
+    const ref = doc(this.db, "drivers", user.uid);
+
+    let snap = await getDoc(ref);
+
+    // IF FIRST TIME LOGIN → CREATE DRIVER DOC
+    if (!snap.exists()) {
+      const newDriver: Driver = {
+        id: user.uid,
+        name: "",                           // empty initially
+        phone: user.phoneNumber || "",
+        address: "",
+        city: "",
+        cabType: "hatchback",
+        vehicleNumber: "",
+        vehicleModel: "",
+        idProofUrl: "",
+        currentCity: "",
+        onlineStatus: false,
+        status: "pending",
+        createdAt: new Date()
+      };
+
+      await setDoc(ref, newDriver);
+      snap = await getDoc(ref); // re-fetch after creation
     }
 
-    return await this.createDefaultDriver(fbUser);
+    return snap.data() as Driver;
   }
+
+
 
   // =======================================================
   // ✏ UPDATE DRIVER PROFILE
