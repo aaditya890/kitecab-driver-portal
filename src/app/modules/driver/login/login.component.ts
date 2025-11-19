@@ -9,9 +9,8 @@ import { AuthService } from '../../../shared/services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  
+ 
   step = signal<'phone' | 'otp'>('phone');
-
   loading = signal(false);
   error = signal('');
   info = signal('');
@@ -20,7 +19,6 @@ export class LoginComponent {
   otpForm: FormGroup;
 
   constructor(private fb: FormBuilder, private auth: AuthService) {
-
     this.phoneForm = this.fb.group({
       phone: ['', [Validators.required, Validators.pattern(/^\+91[0-9]{10}$/)]],
     });
@@ -28,7 +26,12 @@ export class LoginComponent {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
     });
+  }
 
+  changeNumber() {
+    this.step.set('phone');
+    this.error.set('');
+    this.info.set('');
   }
 
   async sendOtp() {
@@ -36,7 +39,7 @@ export class LoginComponent {
     this.info.set('');
 
     if (this.phoneForm.invalid) {
-      this.error.set('Please enter valid number (+91XXXXXXXXXX)');
+      this.error.set('Enter a valid number (+91XXXXXXXXXX)');
       return;
     }
 
@@ -47,8 +50,8 @@ export class LoginComponent {
       this.info.set('OTP sent successfully.');
       this.step.set('otp');
     } catch (err: any) {
-      console.log(err);
-      this.error.set(err.message || 'OTP failed');
+      console.error(err);
+      this.error.set(err.message || 'Failed to send OTP');
     } finally {
       this.loading.set(false);
     }
@@ -59,15 +62,16 @@ export class LoginComponent {
     this.loading.set(true);
 
     if (this.otpForm.invalid) {
-      this.error.set('Please enter 6-digit OTP');
+      this.error.set('Enter 6 digit OTP');
       this.loading.set(false);
       return;
     }
 
     try {
       await this.auth.verifyOtp(this.otpForm.value.otp);
-      // after login, navigation will happen in profile/dashboard
+      this.info.set('Login successful!');
     } catch (err: any) {
+      console.error(err);
       this.error.set(err.message || 'Invalid OTP');
     } finally {
       this.loading.set(false);

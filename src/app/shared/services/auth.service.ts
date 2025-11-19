@@ -19,8 +19,8 @@ export class AuthService {
 
   driver = signal<Driver | null>(null);
 
-  private confirmation?: ConfirmationResult;
-  private recaptchaVerifier?: RecaptchaVerifier;
+  private confirmation: ConfirmationResult | null = null;
+  private recaptchaVerifier: RecaptchaVerifier | null = null;
 
   constructor(private driverService: DriverService) {
 
@@ -38,9 +38,7 @@ export class AuthService {
 
   // SEND OTP
   async sendOtp(phone: string): Promise<void> {
-    if (typeof window === 'undefined') return;
 
-    // recaptcha must be created only once
     if (!this.recaptchaVerifier) {
       this.recaptchaVerifier = new RecaptchaVerifier(
         firebaseAuth,
@@ -54,12 +52,16 @@ export class AuthService {
       phone,
       this.recaptchaVerifier
     );
+
+    (window as any).confirmation = this.confirmation;
   }
 
   // VERIFY OTP
   async verifyOtp(code: string): Promise<Driver> {
+
     if (!this.confirmation) {
-      throw new Error('Send OTP first.');
+      this.confirmation = (window as any).confirmation;
+      if (!this.confirmation) throw new Error("OTP expired. Try again.");
     }
 
     const result = await this.confirmation.confirm(code);
@@ -71,13 +73,11 @@ export class AuthService {
     return driver;
   }
 
-  // LOGOUT
   async logout(): Promise<void> {
     await signOut(firebaseAuth);
     this.driver.set(null);
   }
 
-  // CURRENT DRIVER
   get currentDriver(): Driver | null {
     return this.driver();
   }
