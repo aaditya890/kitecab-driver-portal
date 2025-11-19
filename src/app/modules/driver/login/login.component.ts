@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../shared/services/auth.service';
 @Component({
   selector: 'app-login',
@@ -9,65 +9,28 @@ import { AuthService } from '../../../shared/services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
- 
-  step = signal<'phone' | 'otp'>('phone');
-  loading = signal(false);
-  error = signal('');
-  info = signal('');
+  
+  step: 'phone' | 'otp' = 'phone';
 
-  phoneForm: FormGroup;
-  otpForm: FormGroup;
+  phoneForm = this.fb.group({
+    phone: ['', [Validators.required]]
+  });
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {
+  otpForm = this.fb.group({
+    otp: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
-    this.phoneForm = this.fb.group({
-      phone: ['', [Validators.required, Validators.pattern(/^\+91[0-9]{10}$/)]],
-    });
-
-    this.otpForm = this.fb.group({
-      otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
-    });
-
-  }
+  constructor(private fb: FormBuilder, private auth: AuthService) {}
 
   async sendOtp() {
-    this.error.set('');
-    this.info.set('');
-
-    if (this.phoneForm.invalid) {
-      this.error.set('Please enter valid number (+91XXXXXXXXXX)');
-      return;
-    }
-
-    this.loading.set(true);
-    try {
-      await this.auth.sendOtp(this.phoneForm.value.phone);
-      this.info.set('OTP sent successfully.');
-      this.step.set('otp');
-    } catch (e: any) {
-      this.error.set(e.message || 'OTP sending failed');
-    } finally {
-      this.loading.set(false);
-    }
+    const phone = this.phoneForm.value.phone!;
+    await this.auth.sendOtp(phone);
+    this.step = 'otp';
   }
 
   async verifyOtp() {
-    this.error.set('');
-    this.loading.set(true);
-
-    if (this.otpForm.invalid) {
-      this.error.set('Please enter 6-digit OTP');
-      this.loading.set(false);
-      return;
-    }
-
-    try {
-      await this.auth.verifyOtp(this.otpForm.value.otp);
-      // Navigation handled after login
-    } catch (e: any) {
-      this.error.set(e.message || 'Invalid OTP');
-    } finally {
-      this.loading.set(false);
-    }
+    const otp = this.otpForm.value.otp!;
+    const result = await this.auth.verifyOtp(otp);
+    console.log("LOGGED IN!", result.user);
   }
 }

@@ -1,68 +1,27 @@
-<div class="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
-  <div class="w-full max-w-md bg-[#1e293b] p-6 rounded-2xl shadow-xl text-gray-100">
+<div>
+  <h2>Driver Login</h2>
 
-    <h1 class="text-xl font-bold text-center mb-3">KiteCab Driver Login</h1>
-    <p class="text-sm text-gray-400 text-center mb-4">Login with your phone number</p>
+  <!-- PHONE STEP -->
+   @if (step === 'phone') {
+      <div>
+    <input class="border border-solid border-black" type="text" placeholder="+91XXXXXXXXXX"
+           [formControl]="phoneForm.controls['phone']"/>
 
-    <!-- SUCCESS -->
-    @if (info()) {
-      <p class="text-green-400 text-sm mb-2">{{ info() }}</p>
-    }
-
-    <!-- ERROR -->
-    @if (error()) {
-      <p class="text-red-400 text-sm mb-2">{{ error() }}</p>
-    }
-
-    <!-- PHONE INPUT -->
-    @if (step() === 'phone') {
-      <form [formGroup]="phoneForm" (ngSubmit)="sendOtp()" class="space-y-4">
-
-        <div>
-          <label class="text-sm mb-1 block">Mobile Number</label>
-          <input type="tel"
-                 formControlName="phone"
-                 placeholder="+91XXXXXXXXXX"
-                 class="w-full p-3 rounded-lg bg-[#0f172a] border border-gray-700 focus:border-green-500 outline-none">
-        </div>
-
-        <button type="submit"
-                class="w-full py-3 bg-green-600 rounded-lg text-black font-semibold hover:bg-green-500 transition">
-          {{ loading() ? 'Sending...' : 'Send OTP' }}
-        </button>
-
-      </form>
-    }
-
-    <!-- OTP INPUT -->
-    @if (step() === 'otp') {
-      <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()" class="space-y-4">
-
-        <div>
-          <label class="text-sm mb-1 block">Enter OTP</label>
-          <input type="text"
-                 maxlength="6"
-                 formControlName="otp"
-                 placeholder="Enter 6 digit OTP"
-                 class="w-full p-3 rounded-lg bg-[#0f172a] border border-gray-700 focus:border-green-500 outline-none">
-        </div>
-
-        <button type="submit"
-                class="w-full py-3 bg-green-600 rounded-lg text-black font-semibold hover:bg-green-500 transition">
-          {{ loading() ? 'Verifying...' : 'Verify OTP' }}
-        </button>
-
-        <button type="button"
-                
-                class="w-full py-2 text-gray-300 hover:text-white text-sm">
-          Change Number
-        </button>
-
-      </form>
-    }
-
-    <!-- Invisible reCAPTCHA -->
-    <div id="recaptcha-container"></div>
-
+    <button (click)="sendOtp()" class="bg-green-500 text-white px-4 py-2 rounded">Send OTP</button>
   </div>
+   }
+
+
+  <!-- OTP STEP -->
+   @if (step === 'otp') {
+     <div>
+    <input class="border border-solid border-black " type="text" placeholder="Enter OTP"
+           [formControl]="otpForm.controls['otp']"/>
+
+    <button (click)="verifyOtp()">Verify OTP</button>
+  </div>
+   }
+ 
+
+  <div id="recaptcha-container"></div>
 </div>
