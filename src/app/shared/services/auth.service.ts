@@ -20,14 +20,14 @@ export class AuthService {
   async sendOtp(phone: string): Promise<void> {
 
     // Recaptcha create only once
-    if (!this.recaptchaVerifier) {
-       this.recaptchaVerifier = new RecaptchaVerifier(
-      firebaseAuth,
-      'recaptcha-container',
-      {
-        size: 'normal'
-      }
-    );
+     if (!this.recaptchaVerifier) {
+      this.recaptchaVerifier = new RecaptchaVerifier(
+        firebaseAuth,                 // auth instance here
+        'recaptcha-container',        // HTML element
+        {
+          size: 'invisible'
+        }
+      );
     }
 
     // Call Firebase OTP
