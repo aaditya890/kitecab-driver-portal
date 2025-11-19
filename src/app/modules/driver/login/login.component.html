@@ -1,1 +1,67 @@
-<p>login works!</p>
+<div class="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
+
+  <div class="w-full max-w-md bg-[#1e293b] p-8 rounded-2xl shadow-xl shadow-black/40 border border-white/5">
+
+    <h1 class="text-2xl font-bold text-center mb-2 text-white">Driver Login</h1>
+    <p class="text-sm text-gray-400 text-center mb-6">Login securely with your phone number</p>
+
+    <!-- INFO -->
+    @if (info()) {
+      <div class="text-green-400 text-sm mb-3">{{ info() }}</div>
+    }
+
+    <!-- ERROR -->
+    @if (error()) {
+      <div class="text-red-400 text-sm mb-3">{{ error() }}</div>
+    }
+
+    <!-- PHONE STEP -->
+    @if (step() === 'phone') {
+      <form [formGroup]="phoneForm" (ngSubmit)="sendOtp()" class="space-y-4">
+
+        <div>
+          <label class="text-sm mb-1 block text-gray-300">Mobile Number</label>
+          <input type="tel"
+                 formControlName="phone"
+                 placeholder="+91XXXXXXXXXX"
+                 class="w-full p-3 rounded-lg bg-[#0f172a] border border-gray-700 text-white focus:border-green-500 outline-none">
+        </div>
+
+        <button type="submit"
+                class="w-full py-3 bg-green-600 rounded-lg text-black font-bold hover:bg-green-500 transition">
+          {{ loading() ? 'Sending...' : 'Send OTP' }}
+        </button>
+
+      </form>
+    }
+
+    <!-- OTP STEP -->
+    @if (step() === 'otp') {
+      <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()" class="space-y-4">
+
+        <div>
+          <label class="text-sm mb-1 block text-gray-300">Enter OTP</label>
+          <input type="text"
+                 maxlength="6"
+                 formControlName="otp"
+                 class="w-full p-3 rounded-lg bg-[#0f172a] border border-gray-700 text-white focus:border-green-500 outline-none">
+        </div>
+
+        <button type="submit"
+                class="w-full py-3 bg-green-600 rounded-lg text-black font-bold hover:bg-green-500 transition">
+          {{ loading() ? 'Verifying...' : 'Verify OTP' }}
+        </button>
+
+        <button type="button"
+                (click)="step.set('phone')"
+                class="w-full py-2 text-gray-400 hover:text-white text-sm">
+          Change Number
+        </button>
+
+      </form>
+    }
+
+    <div id="recaptcha-container"></div>
+
+  </div>
+</div>

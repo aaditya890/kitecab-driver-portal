@@ -1,103 +1,257 @@
-src
-├── app
-│   ├── app.component.html
-│   ├── app.component.scss
-│   ├── app.component.spec.ts
-│   ├── app.component.ts
-│   ├── app.config.ts
-│   ├── app.routes.ts
-│   ├── modules
-│   │   ├── admin
-│   │   │   ├── admin.routes.ts
-│   │   │   ├── booking-details
-│   │   │   │   ├── booking-details.component.html
-│   │   │   │   ├── booking-details.component.scss
-│   │   │   │   ├── booking-details.component.spec.ts
-│   │   │   │   └── booking-details.component.ts
-│   │   │   ├── booking-list
-│   │   │   │   ├── booking-list.component.html
-│   │   │   │   ├── booking-list.component.scss
-│   │   │   │   ├── booking-list.component.spec.ts
-│   │   │   │   └── booking-list.component.ts
-│   │   │   ├── create-booking
-│   │   │   │   ├── create-booking.component.html
-│   │   │   │   ├── create-booking.component.scss
-│   │   │   │   ├── create-booking.component.spec.ts
-│   │   │   │   └── create-booking.component.ts
-│   │   │   ├── dashboard
-│   │   │   │   ├── dashboard.component.html
-│   │   │   │   ├── dashboard.component.scss
-│   │   │   │   ├── dashboard.component.spec.ts
-│   │   │   │   └── dashboard.component.ts
-│   │   │   └── login
-│   │   │       ├── login.component.html
-│   │   │       ├── login.component.scss
-│   │   │       ├── login.component.spec.ts
-│   │   │       └── login.component.ts
-│   │   └── driver
-│   │       ├── booking-details
-│   │       │   ├── booking-details.component.html
-│   │       │   ├── booking-details.component.scss
-│   │       │   ├── booking-details.component.spec.ts
-│   │       │   └── booking-details.component.ts
-│   │       ├── bookings
-│   │       │   ├── bookings.component.html
-│   │       │   ├── bookings.component.scss
-│   │       │   ├── bookings.component.spec.ts
-│   │       │   └── bookings.component.ts
-│   │       ├── dashboard
-│   │       │   ├── dashboard.component.html
-│   │       │   ├── dashboard.component.scss
-│   │       │   ├── dashboard.component.spec.ts
-│   │       │   └── dashboard.component.ts
-│   │       ├── driver.routes.ts
-│   │       ├── login
-│   │       │   ├── login.component.html
-│   │       │   ├── login.component.scss
-│   │       │   ├── login.component.spec.ts
-│   │       │   └── login.component.ts
-│   │       ├── profile
-│   │       │   ├── profile.component.html
-│   │       │   ├── profile.component.scss
-│   │       │   ├── profile.component.spec.ts
-│   │       │   └── profile.component.ts
-│   │       └── set-location
-│   │           ├── set-location.component.html
-│   │           ├── set-location.component.scss
-│   │           ├── set-location.component.spec.ts
-│   │           └── set-location.component.ts
-│   └── shared
-│       ├── components
-│       │   ├── header
-│       │   │   ├── header.component.html
-│       │   │   ├── header.component.scss
-│       │   │   ├── header.component.spec.ts
-│       │   │   └── header.component.ts
-│       │   └── loader
-│       │       ├── loader.component.html
-│       │       ├── loader.component.scss
-│       │       ├── loader.component.spec.ts
-│       │       └── loader.component.ts
-│       ├── guards
-│       │   ├── admin.guard.ts
-│       │   ├── approved-driver.guard.ts
-│       │   └── driver.guard.ts
-│       ├── interfaces
-│       │   ├── bid.interface.ts
-│       │   ├── booking.interface.ts
-│       │   ├── commission.interface.ts
-│       │   ├── driver.interface.ts
-│       │   └── user.interface.ts
-│       └── services
-│           ├── auth.service.ts
-│           ├── bid.service.ts
-│           ├── booking.service.ts
-│           ├── cloudinary.service.ts
-│           ├── driver.service.ts
-│           └── notification.service.ts
-├── assets
-│   └── .gitkeep
-├── favicon.ico
-├── index.html
-├── main.ts
-└── styles.scss
+<!-- <div class="min-h-screen bg-[#0f172a] p-6 flex justify-center">
+  <div class="w-full max-w-3xl bg-[#1e293b] p-6 rounded-xl shadow-xl text-gray-100">
+
+    <h1 class="text-xl font-bold mb-1">Driver Registration</h1>
+    <p class="text-gray-400 mb-4">Complete your profile to continue</p>
+
+    @if (success()) {
+      <p class="text-green-400 text-sm mb-2">{{ success() }}</p>
+    }
+    @if (error()) {
+      <p class="text-red-400 text-sm mb-2">{{ error() }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div>
+        <label class="text-sm">Name</label>
+        <input class="input" type="text" formControlName="name" />
+      </div>
+
+      <div>
+        <label class="text-sm">Address</label>
+        <input class="input" type="text" formControlName="address" />
+      </div>
+
+      <div>
+        <label class="text-sm">City</label>
+        <input class="input" type="text" formControlName="city" />
+      </div>
+
+      <div>
+        <label class="text-sm">Cab Type</label>
+        <select class="input" formControlName="cabType">
+          @for (type of cabTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="text-sm">Vehicle Number</label>
+        <input class="input" type="text" formControlName="vehicleNumber" />
+      </div>
+
+      <div>
+        <label class="text-sm">Vehicle Model</label>
+        <input class="input" type="text" formControlName="vehicleModel" />
+      </div>
+
+      <div>
+        <label class="text-sm">Current City</label>
+        <input class="input" type="text" formControlName="currentCity" />
+      </div>
+
+      <div>
+        <label class="text-sm">ID Proof Type</label>
+        <select class="input" formControlName="idProofType">
+          @for (type of idTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm mb-1">Upload ID Proof</label>
+        <input type="file" (change)="onFileChange($event)" class="text-sm" />
+      </div>
+
+      <div class="md:col-span-2">
+        <button type="submit"
+          class="w-full py-3 bg-green-600 rounded-lg text-black font-bold hover:bg-green-500 transition">
+          {{ loading() ? 'Saving...' : 'Save Profile' }}
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div> -->
+
+
+
+
+loading = signal(false);
+  error = signal('');
+  success = signal('');
+  selectedFile: File | null = null;
+
+  form = this.fb.nonNullable.group({
+    name: ['', Validators.required],
+    address: ['', Validators.required],
+    city: ['', Validators.required],
+    cabType: ['hatchback', Validators.required],
+    vehicleNumber: ['', Validators.required],
+    vehicleModel: ['', Validators.required],
+    idProofType: ['Aadhaar', Validators.required],
+    currentCity: ['', Validators.required],
+  });
+
+  cabTypes = ['hatchback', 'sedan', 'suv'];
+  idTypes = ['Aadhaar', 'DL', 'PAN', 'Voter'];
+
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private driverService: DriverService,
+    private cloud: CloudinaryService
+  ) {}
+
+  ngOnInit() {
+    const driver = this.auth.currentDriver;
+    if (!driver) return;
+
+    this.form.patchValue({
+      name: driver.name,
+      address: driver.address,
+      city: driver.city,
+      cabType: driver.cabType,
+      vehicleNumber: driver.vehicleNumber,
+      vehicleModel: driver.vehicleModel,
+      idProofType: driver.idProofType || 'Aadhaar',
+      currentCity: driver.currentCity,
+    });
+  }
+
+  onFileChange(e: any) {
+    this.selectedFile = e.target.files[0];
+  }
+
+  async save() {
+    this.error.set('');
+    this.success.set('');
+
+    if (this.form.invalid) {
+      this.error.set('Please fill all required fields.');
+      return;
+    }
+
+    const driver = this.auth.currentDriver;
+    if (!driver) {
+      this.error.set('Not logged in.');
+      return;
+    }
+
+    this.loading.set(true);
+
+    let proofUrl = driver.idProofUrl;
+
+    try {
+      if (this.selectedFile) {
+        proofUrl = await this.cloud.uploadFile(this.selectedFile);
+      }
+
+      const formValue = this.form.value;
+      await this.driverService.updateDriverProfile(driver.id!, {
+        ...formValue,
+        cabType: formValue.cabType as 'hatchback' | 'sedan' | 'suv',
+        idProofUrl: proofUrl,
+        status: 'pending',
+      });
+
+      this.success.set('Profile saved! Waiting for admin approval.');
+    } catch (err: any) {
+      this.error.set(err.message || 'Failed to save profile');
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ---------------------------
+  routes 
+  <div class="p-4 space-y-6">
+
+  <!-- TITLE -->
+  <h1 class="text-xl font-bold text-center text-blue-700">
+    Routing Test 
+  </h1>
+
+  <!-- DRIVER SECTION -->
+  <div class="p-4 border rounded-xl bg-gray-50">
+    <h2 class="font-semibold text-lg mb-3 text-green-700">Driver Routes</h2>
+
+    <div class="flex flex-col gap-3">
+
+      <a routerLink="/driver/login" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Login
+      </a>
+
+      <a routerLink="/driver/profile" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Profile
+      </a>
+
+      <a routerLink="/driver/dashboard" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Dashboard
+      </a>
+
+      <a routerLink="/driver/set-location" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Set Location
+      </a>
+
+      <a routerLink="/driver/bookings" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Bookings
+      </a>
+
+      <a routerLink="/driver/booking/123" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
+        Driver Booking Details (ID Test)
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- ADMIN SECTION -->
+  <div class="p-4 border rounded-xl bg-gray-50">
+    <h2 class="font-semibold text-lg mb-3 text-blue-700">Admin Routes</h2>
+
+    <div class="flex flex-col gap-3">
+
+      <a routerLink="/admin/login" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
+        Admin Login
+      </a>
+
+      <a routerLink="/admin/dashboard" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
+        Admin Dashboard
+      </a>
+
+      <a routerLink="/admin/create-booking" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
+        Admin Create Booking
+      </a>
+
+      <a routerLink="/admin/bookings" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
+        Admin Booking List
+      </a>
+
+      <a routerLink="/admin/booking/123" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
+        Admin Booking Details (ID Test)
+      </a>
+
+    </div>
+  </div>
+
+</div>

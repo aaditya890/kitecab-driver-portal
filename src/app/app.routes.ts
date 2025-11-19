@@ -11,5 +11,9 @@ export const routes: Routes = [
         loadChildren: () =>
             import('./modules/admin/admin.routes').then(m => m.adminRoutes)
     },
-
+    {
+        path:'',
+        pathMatch:'full',
+        redirectTo: 'driver/login'
+    }
 ];
