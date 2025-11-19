@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-  signInWithPhoneNumber,
   RecaptchaVerifier,
-  ConfirmationResult,
+  signInWithPhoneNumber,
+  ConfirmationResult
 } from 'firebase/auth';
 
 import { firebaseAuth } from '../../firebase.config';
@@ -19,18 +19,16 @@ export class AuthService {
   /** SEND OTP */
   async sendOtp(phone: string): Promise<void> {
 
-    // Recaptcha create only once
-     if (!this.recaptchaVerifier) {
+    if (!this.recaptchaVerifier) {
       this.recaptchaVerifier = new RecaptchaVerifier(
-        firebaseAuth,                 // auth instance here
-        'recaptcha-container',        // HTML element
+        firebaseAuth,             // ✔ FIRST PARAM = AUTH
+        'recaptcha-container',    // ✔ SECOND = DIV ID
         {
-          size: 'invisible'
+          size: 'invisible'       // ✔ invisible captcha
         }
       );
     }
 
-    // Call Firebase OTP
     this.confirmation = await signInWithPhoneNumber(
       firebaseAuth,
       phone,
@@ -40,14 +38,13 @@ export class AuthService {
 
   /** VERIFY OTP */
   async verifyOtp(code: string) {
-    if (!this.confirmation) throw new Error('Send OTP first.');
+    if (!this.confirmation) throw new Error('Send OTP first');
 
     const result = await this.confirmation.confirm(code);
     const fbUser = result.user;
 
-    // Driver fetch/create
-    const driver = await this.driverService.ensureDriverOnLogin(fbUser);
-
-    return driver;
+    // Firestore driver create/get
+    return await this.driverService.ensureDriverOnLogin(fbUser);
   }
+
 }
