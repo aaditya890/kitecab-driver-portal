@@ -8,46 +8,49 @@ import { BookingsComponent } from './bookings/bookings.component';
 import { BookingDetailsComponent } from './booking-details/booking-details.component';
 import { driverGuard } from '../../shared/guards/driver.guard';
 import { approvedDriverGuard } from '../../shared/guards/approved-driver.guard';
+import { APP_ROUTES } from '../../routes.constant';
+
 
 
 export const driverRoutes: Routes = [
 
-  // LOGIN (no guard)
-  { path: 'login', component: LoginComponent },
-
-  // PROFILE SETUP (driver must login)
+  { path: APP_ROUTES.DRIVER.LOGIN, component: LoginComponent },
   {
-    path: 'profile',
+    path: APP_ROUTES.DRIVER.SIGNUP,
+    loadComponent: () =>
+      import('./signup/signup.component').then(m => m.SignupComponent)
+  },
+  {
+    path: APP_ROUTES.DRIVER.PROFILE,
     component: ProfileComponent,
     canActivate: [driverGuard]
   },
 
-  // DASHBOARD
+
   {
-    path: 'dashboard',
+    path: APP_ROUTES.DRIVER.DASHBOARD,
     component: DashboardComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   },
 
-  // DRIVER SET LOCATION
+
   {
-    path: 'set-location',
+    path: APP_ROUTES.DRIVER.SET_LOCATION,
     component: SetLocationComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   },
 
-  // ACTIVE BOOKINGS
+
   {
-    path: 'bookings',
+    path: APP_ROUTES.DRIVER.BOOKINGS,
     component: BookingsComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   },
 
-  // BOOKING DETAILS
+
   {
-    path: 'booking/:id',
+    path: APP_ROUTES.DRIVER.BOOKING_DETAILS,
     component: BookingDetailsComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   }
-
 ];

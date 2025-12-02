@@ -6,7 +6,7 @@
 
   <!-- Primary SEO Title -->
   <!-- <title>Kitecab Driver Portal | Chhattisgarh Taxi Driver Login & Dashboard</title> -->
-<title>.................</title>
+  <title>.................</title>
   <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,12 +35,40 @@
   <meta property="og:title" content="Kitecab Driver Portal – Chhattisgarh Taxi Driver Dashboard">
   <meta property="og:description"
     content="Login to Kitecab Driver Portal and manage your daily rides, payments, and earning reports across Chhattisgarh.">
-  <meta property="og:image" content="assets/icon.png">
+  <meta property="og:image" content="assets/icon.webp">
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="assets/icon.png">
+  <link rel="icon" type="image/x-icon" href="assets/icon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&family=Archivo+Black&family=Bitcount+Grid+Single:wght@100..900&family=Caprasimo&family=Capriola&family=Edu+NSW+ACT+Hand+Pre:wght@400..700&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Finlandica:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:wght@200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Syne:wght@400..800&family=Varela+Round&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
+  <!-- MSG91 OTP WIDGET -->
+  <script type="text/javascript">
+    var configuration = {
+      widgetId: "356b786b6450303230373136",            // MSG91 se milega
+      tokenAuth: "478655TF1BRMeYGE69244f6dP1",        // MSG91 se milega
+      identifier: "",                        // Leave empty (Angular se bhejenge)
+      exposeMethods: true,                   // <-- MOST IMPORTANT
+      captchaRenderId: "",                   // Optional (use nahi kar rahe)
+
+      success: (data) => {
+        console.log("OTP Verified (config success): ", data);
+        window.dispatchEvent(new CustomEvent("msg91-otp-success", { detail: data }));
+      },
+      failure: (error) => {
+        console.log("OTP Failed (config fail): ", error);
+        window.dispatchEvent(new CustomEvent("msg91-otp-failure", { detail: error }));
+      },
+    };
+  </script>
+
+  <script type="text/javascript" src="https://verify.msg91.com/otp-provider.js" onload="initSendOTP(configuration)">
+  </script>
+
   <app-root></app-root>
 </body>
 

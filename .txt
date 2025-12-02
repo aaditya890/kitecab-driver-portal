@@ -1,257 +1,128 @@
-<!-- <div class="min-h-screen bg-[#0f172a] p-6 flex justify-center">
-  <div class="w-full max-w-3xl bg-[#1e293b] p-6 rounded-xl shadow-xl text-gray-100">
+dirveer login 
+------------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DriverService } from '../../../shared/services/driver.service';
 
-    <h1 class="text-xl font-bold mb-1">Driver Registration</h1>
-    <p class="text-gray-400 mb-4">Complete your profile to continue</p>
+declare var initSendOTP: any;
+declare var sendOtp: any;
+declare var verifyOtp: any;
 
-    @if (success()) {
-      <p class="text-green-400 text-sm mb-2">{{ success() }}</p>
-    }
-    @if (error()) {
-      <p class="text-red-400 text-sm mb-2">{{ error() }}</p>
-    }
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
+})
+export class LoginComponent implements OnInit {
 
-    <form [formGroup]="form" (ngSubmit)="save()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  phone = '';
+  otp = '';
+  step: 'phone' | 'otp' = 'phone';
 
-      <div>
-        <label class="text-sm">Name</label>
-        <input class="input" type="text" formControlName="name" />
-      </div>
+  constructor(private router: Router, private driverService: DriverService) {}
 
-      <div>
-        <label class="text-sm">Address</label>
-        <input class="input" type="text" formControlName="address" />
-      </div>
+  ngOnInit(): void {
+    initSendOTP({
+      widgetId: "356b736c7649373834323630",
+      tokenAuth: "{token}",
+      exposeMethods: true,
 
-      <div>
-        <label class="text-sm">City</label>
-        <input class="input" type="text" formControlName="city" />
-      </div>
+      success: (data: any) => {
+        console.log("GLOBAL SUCCESS:", data);
+      },
 
-      <div>
-        <label class="text-sm">Cab Type</label>
-        <select class="input" formControlName="cabType">
-          @for (type of cabTypes; track type) {
-            <option [value]="type">{{ type }}</option>
-          }
-        </select>
-      </div>
-
-      <div>
-        <label class="text-sm">Vehicle Number</label>
-        <input class="input" type="text" formControlName="vehicleNumber" />
-      </div>
-
-      <div>
-        <label class="text-sm">Vehicle Model</label>
-        <input class="input" type="text" formControlName="vehicleModel" />
-      </div>
-
-      <div>
-        <label class="text-sm">Current City</label>
-        <input class="input" type="text" formControlName="currentCity" />
-      </div>
-
-      <div>
-        <label class="text-sm">ID Proof Type</label>
-        <select class="input" formControlName="idProofType">
-          @for (type of idTypes; track type) {
-            <option [value]="type">{{ type }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="md:col-span-2">
-        <label class="block text-sm mb-1">Upload ID Proof</label>
-        <input type="file" (change)="onFileChange($event)" class="text-sm" />
-      </div>
-
-      <div class="md:col-span-2">
-        <button type="submit"
-          class="w-full py-3 bg-green-600 rounded-lg text-black font-bold hover:bg-green-500 transition">
-          {{ loading() ? 'Saving...' : 'Save Profile' }}
-        </button>
-      </div>
-    </form>
-
-  </div>
-</div> -->
-
-
-
-
-loading = signal(false);
-  error = signal('');
-  success = signal('');
-  selectedFile: File | null = null;
-
-  form = this.fb.nonNullable.group({
-    name: ['', Validators.required],
-    address: ['', Validators.required],
-    city: ['', Validators.required],
-    cabType: ['hatchback', Validators.required],
-    vehicleNumber: ['', Validators.required],
-    vehicleModel: ['', Validators.required],
-    idProofType: ['Aadhaar', Validators.required],
-    currentCity: ['', Validators.required],
-  });
-
-  cabTypes = ['hatchback', 'sedan', 'suv'];
-  idTypes = ['Aadhaar', 'DL', 'PAN', 'Voter'];
-
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private driverService: DriverService,
-    private cloud: CloudinaryService
-  ) {}
-
-  ngOnInit() {
-    const driver = this.auth.currentDriver;
-    if (!driver) return;
-
-    this.form.patchValue({
-      name: driver.name,
-      address: driver.address,
-      city: driver.city,
-      cabType: driver.cabType,
-      vehicleNumber: driver.vehicleNumber,
-      vehicleModel: driver.vehicleModel,
-      idProofType: driver.idProofType || 'Aadhaar',
-      currentCity: driver.currentCity,
+      failure: (error: any) => {
+        console.log("GLOBAL FAILURE:", error);
+      }
     });
   }
 
-  onFileChange(e: any) {
-    this.selectedFile = e.target.files[0];
-  }
+  async sendOtp() {
+    if (!this.phone) return alert("Enter phone number");
 
-  async save() {
-    this.error.set('');
-    this.success.set('');
+    const formatted = "91" + this.phone;
 
-    if (this.form.invalid) {
-      this.error.set('Please fill all required fields.');
-      return;
-    }
+    const exists = await this.driverService.driverExists(formatted);
 
-    const driver = this.auth.currentDriver;
-    if (!driver) {
-      this.error.set('Not logged in.');
-      return;
-    }
-
-    this.loading.set(true);
-
-    let proofUrl = driver.idProofUrl;
-
-    try {
-      if (this.selectedFile) {
-        proofUrl = await this.cloud.uploadFile(this.selectedFile);
-      }
-
-      const formValue = this.form.value;
-      await this.driverService.updateDriverProfile(driver.id!, {
-        ...formValue,
-        cabType: formValue.cabType as 'hatchback' | 'sedan' | 'suv',
-        idProofUrl: proofUrl,
-        status: 'pending',
+    if (exists) {
+      sendOtp(formatted,
+        () => {
+          console.log("OTP SENT SUCCESS");
+          this.step = 'otp';
+        },
+        (err: any) => {
+          console.error("OTP SEND FAILED", err);
+          alert("OTP sending failed");
+        }
+      );
+    } else {
+      alert("User not found! Redirecting to signup...");
+      this.router.navigate(['/signup'], {
+        queryParams: { phone: this.phone }
       });
-
-      this.success.set('Profile saved! Waiting for admin approval.');
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to save profile');
-    } finally {
-      this.loading.set(false);
     }
   }
 
+  async verifyOtpCode() {
+
+    verifyOtp(this.otp,
+      async () => {
+
+        console.log("OTP Verified!");
+
+        const driver = await this.driverService.getDriver("91" + this.phone);
+
+        console.log("LOGIN SUCCESS", driver);
+
+        this.router.navigate(['/driver/dashboard']);
+      },
+      () => {
+        alert("Invalid OTP!");
+      }
+    );
+  }
+}
 
 
+---------------------------------------------------------
 
+<div class="otp-box">
 
+  <h2>Driver Login</h2>
 
-
-
-
-
-
-
-
-
-
-
-
-  ---------------------------
-  routes 
-  <div class="p-4 space-y-6">
-
-  <!-- TITLE -->
-  <h1 class="text-xl font-bold text-center text-blue-700">
-    Routing Test 
-  </h1>
-
-  <!-- DRIVER SECTION -->
-  <div class="p-4 border rounded-xl bg-gray-50">
-    <h2 class="font-semibold text-lg mb-3 text-green-700">Driver Routes</h2>
-
-    <div class="flex flex-col gap-3">
-
-      <a routerLink="/driver/login" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Login
-      </a>
-
-      <a routerLink="/driver/profile" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Profile
-      </a>
-
-      <a routerLink="/driver/dashboard" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Dashboard
-      </a>
-
-      <a routerLink="/driver/set-location" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Set Location
-      </a>
-
-      <a routerLink="/driver/bookings" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Bookings
-      </a>
-
-      <a routerLink="/driver/booking/123" class="px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-        Driver Booking Details (ID Test)
-      </a>
-
+  @if (step === 'phone') {
+    <div>
+      <input [(ngModel)]="phone" placeholder="Phone Number" />
+      <button (click)="sendOtp()">Send OTP</button>
     </div>
-  </div>
+  }
 
-
-  <!-- ADMIN SECTION -->
-  <div class="p-4 border rounded-xl bg-gray-50">
-    <h2 class="font-semibold text-lg mb-3 text-blue-700">Admin Routes</h2>
-
-    <div class="flex flex-col gap-3">
-
-      <a routerLink="/admin/login" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
-        Admin Login
-      </a>
-
-      <a routerLink="/admin/dashboard" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
-        Admin Dashboard
-      </a>
-
-      <a routerLink="/admin/create-booking" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
-        Admin Create Booking
-      </a>
-
-      <a routerLink="/admin/bookings" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
-        Admin Booking List
-      </a>
-
-      <a routerLink="/admin/booking/123" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-center">
-        Admin Booking Details (ID Test)
-      </a>
-
+  @if (step === 'otp') {
+    <div>
+      <input [(ngModel)]="otp" placeholder="Enter OTP" />
+      <button (click)="verifyOtpCode()">Verify OTP</button>
     </div>
-  </div>
+  }
 
 </div>
+
+
+
+
+
+
+<!-- <svg class="w-5 h-5 text-blue-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.608.951
+                       c.4 1.982 1.944 4.374 3.976 5.82l.951-1.608a1 1 0 011.06-.54l4.435.74a1 1 0 
+                       01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+            </svg> -->
+
+
+            login hioigya hai 
+            thodda guards or services ko smjh k riegtser me jyenge ok 
+            sabhi ko capital me rkhana hai otp box chota krna hai --
+
+             timing sahi krna hai chat me hai chat 

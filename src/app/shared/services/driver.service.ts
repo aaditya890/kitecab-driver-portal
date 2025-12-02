@@ -1,18 +1,25 @@
-import { Injectable } from '@angular/core';
-import {
-  doc,
-  getDoc,
-  setDoc,
-} from 'firebase/firestore';
-
-import { firebaseDb } from '../../firebase.config';
-import { User as FirebaseUser } from 'firebase/auth';
+import { Injectable, inject } from '@angular/core';
 import { Driver } from '../interfaces/driver.interface';
+import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DriverService {
+  private fs = inject(Firestore);
 
-  constructor() { }
+  async driverExists(phone: string): Promise<boolean> {
+    const ref = doc(this.fs, "drivers", phone);
+    const snap = await getDoc(ref);
+    return snap.exists();
+  }
+
+  async getDriver(phone: string) {
+    const ref = doc(this.fs, "drivers", phone);
+    const snap = await getDoc(ref);
+    return snap.data() as Driver;
+  }
+
+  async createDriver(driver: Driver) {
+    const ref = doc(this.fs, "drivers", driver.phone);
+    await setDoc(ref, driver);
+  }
 }

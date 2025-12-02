@@ -1,1 +1,171 @@
-<p>Driver Login</p>
+<!-- Changed background from light to dark matching signup design: from-slate-900 to-slate-800 -->
+<div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
+  <!-- Updated header gradient to match signup: from-blue-600 to-cyan-600 -->
+  <div class="absolute inset-0 h-96 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-b-3xl -z-10"></div>
+
+  <div class="w-full max-w-md">
+    <!-- Header Section -->
+    <div class="text-center mb-6">
+      <div class="inline-block bg-white rounded-full mb-2 shadow-xl">
+        <!-- <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg> -->
+        <img src="assets/icon.webp" alt="#" class="h-14">
+      </div>
+      <!-- Text color changed from mixed to white for better contrast on dark background -->
+      <h1 class="text-3xl font-bold text-white mb-2">Driver Login</h1>
+      <p class="text-blue-100 text-sm font-medium">Access your account</p>
+    </div>
+
+    <!-- Step Indicator -->
+    <!-- Updated step indicators to use same styling as signup with proper ngClass binding -->
+    <div class="flex justify-between mb-8 px-2">
+      <div class="flex flex-col items-center" [class.opacity-50]="currentStep > 2">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
+          [ngClass]="currentStep === 1 ? 'bg-blue-600 text-white' : currentStep > 1 ? 'bg-green-500 text-white' : 'bg-white/30 text-white'">
+          @if (currentStep > 1) {
+          <span class="text-xl">✓</span>
+          } @else {
+          <span>1</span>
+          }
+        </div>
+        <span class="text-xs text-white font-bold">Phone</span>
+      </div>
+
+      <!-- Progress line styling to match signup -->
+      <div class="flex-1 h-1 bg-white/30 my-5 mx-2" [class.bg-white]="currentStep > 1"></div>
+
+      <div class="flex flex-col items-center" [class.opacity-50]="currentStep < 2">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
+          [ngClass]="currentStep === 2 ? 'bg-blue-600 text-white' : 'bg-white/30 text-white'">
+          <span>2</span>
+        </div>
+        <span class="text-xs text-white font-bold">OTP</span>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <!-- Updated card styling to match signup: white rounded-3xl with proper shadow -->
+    <div class="bg-white rounded-3xl shadow-2xl p-5 min-h-fit">
+
+      <!-- Error Message -->
+      @if (error) {
+      <!-- Updated error styling for better contrast on white background -->
+      <div class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm flex items-start gap-2">
+        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <span class="font-semibold">{{ error }}</span>
+      </div>
+      }
+
+      <form [formGroup]="form" class="space-y-4">
+
+        <!-- STEP 1: Phone -->
+        @if (currentStep === 1) {
+        <div class="animate-fadeIn space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
+            <div class="flex items-center gap-2 bg-gray-50 rounded-lg border-2 border-gray-300 
+     focus-within:border-blue-500 focus-within:bg-blue-50 transition-colors">
+
+              <!-- SVG Indian Flag -->
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"
+                class="w-6 h-4 ml-2 rounded-sm" />
+
+              <span class="text-gray-700 text-md font-bold px-1">+91</span>
+
+              <input formControlName="phone" type="text" maxlength="10" inputmode="numeric" class="flex-1 px-3 py-3 bg-transparent outline-none text-gray-900 
+           placeholder-gray-500 font-medium text-base" placeholder="Enter 10-digit number">
+            </div>
+
+            <p class="text-xs text-gray-600 mt-2 font-medium">✓ We'll send you an OTP to verify</p>
+          </div>
+
+          <!-- Changed button color from blue gradient to consistent blue -->
+          <button type="button" (click)="sendOtp()" [disabled]="loading"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base mt-4">
+            @if (!loading) {
+            <span>Send OTP</span>
+            } @else {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              Sending...
+            </span>
+            }
+          </button>
+        </div>
+        }
+
+        <!-- STEP 2: OTP Verification -->
+        @if (currentStep === 2) {
+        <div class="animate-fadeIn space-y-4">
+          <div>
+            <!-- Updated label styling for consistency with step 1 -->
+            <label class="block text-sm font-bold text-gray-900 mb-2">Enter OTP</label>
+            <p class="text-sm text-gray-600 mb-4 font-medium">📱 OTP sent to +91{{ phoneNumber }}</p>
+
+            <!-- Updated OTP input to match signup: larger text-5xl, better letter spacing, improved styling -->
+            <input formControlName="otp" type="text" maxlength="4" inputmode="numeric"
+              class="w-full px-3 py-3 text-center text-4xl tracking-[0.5em] border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-gray-900 font-bold placeholder-gray-300 bg-gray-50 hover:border-gray-400"
+              placeholder="0000">
+          </div>
+
+          <!-- Button styling: changed from gradient to solid blue-600 to match signup exactly -->
+          <button type="button" (click)="verifyOtp()" [disabled]="loading"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base">
+            @if (!loading) {
+            <span>Verify OTP</span>
+            } @else {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              Verifying...
+            </span>
+            }
+          </button>
+
+          <!-- Updated text styling for better contrast on white background -->
+          <div class="text-center space-y-2 pt-2">
+            <p class="text-sm font-medium text-gray-700">
+              @if (resendTimer > 0) {
+              <span class="text-blue-600 font-bold">⏱️ Resend in {{ resendTimer }}s</span>
+              } @else {
+              <button type="button" (click)="sendOtp()" class="text-blue-600 hover:text-blue-700 font-bold underline">
+                Resend OTP
+              </button>
+              }
+            </p>
+            <button type="button" (click)="changePhone()"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium underline block w-full">
+              Change phone number
+            </button>
+          </div>
+        </div>
+        }
+
+      </form>
+
+      <!-- Footer Link -->
+      <!-- Updated footer styling to match signup design with better contrast -->
+      <div class="text-center mt-4 pt-4 border-t-2 border-gray-200">
+        <p class="text-gray-700 text-sm font-medium">
+          Don't have an account?
+          <a routerLink="/driver/signup" class="text-blue-600 hover:text-blue-700 font-bold">Create Account</a>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
