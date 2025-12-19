@@ -5,11 +5,11 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class CloudinaryService {
-  cloudName = 'dv0b2asck';
+  cloud_name = 'dv0b2asck';
   uploadPreset = 'driver_docs';
 
   async uploadFile(file: File): Promise<string> {
-    const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/upload`;
+    const url = `https://api.cloudinary.com/v1_1/${this.cloud_name}/upload`;
 
     const formData = new FormData();
     formData.append('file', file);
