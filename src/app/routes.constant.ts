@@ -13,7 +13,7 @@ export const APP_ROUTES = {
     BOOKINGS: 'bookings',
 
     BOOKING_DETAILS: 'booking/:id',
-    BOOKING_DETAILS_ID: (id: string | number) => `booking/${id}`,
+   BOOKING_DETAILS_ID: (id: string | number) => `/driver/booking/${id}`,
   },
 
   ADMIN: {

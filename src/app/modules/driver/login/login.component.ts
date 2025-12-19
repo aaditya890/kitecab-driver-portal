@@ -3,6 +3,7 @@ import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from "@angu
 import { Router, RouterLink } from "@angular/router"
 import { NgClass } from "@angular/common"
 import { DriverService } from "../../../shared/services/driver.service"
+import { APP_ROUTES } from "../../../routes.constant"
 
 declare global {
   interface Window {
@@ -20,11 +21,10 @@ declare global {
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
-  
   fb = inject(FormBuilder)
   router = inject(Router)
   driverService = inject(DriverService)
-
+  APP_ROUTES = APP_ROUTES;
   loading = false
   error: string | null = null
   currentStep = 1
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     const driver = localStorage.getItem("driver")
     if (driver) {
-      this.router.navigate(["/driver/dashboard"])
+      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.DASHBOARD]);
     }
   }
 
@@ -99,9 +99,9 @@ export class LoginComponent implements OnInit {
         this.loading = false
 
         if (driver?.status === "approved") {
-          this.router.navigate(["/driver/dashboard"])
+          this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.DASHBOARD]);
         } else {
-          this.router.navigate(["/driver/profile"])
+          this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.PROFILE]);
         }
       },
       () => {

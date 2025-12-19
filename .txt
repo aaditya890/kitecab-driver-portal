@@ -1,128 +1,47 @@
-dirveer login 
-------------------------------------------------------------------
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { DriverService } from '../../../shared/services/driver.service';
-
-declare var initSendOTP: any;
-declare var sendOtp: any;
-declare var verifyOtp: any;
-
-@Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
-})
-export class LoginComponent implements OnInit {
-
-  phone = '';
-  otp = '';
-  step: 'phone' | 'otp' = 'phone';
-
-  constructor(private router: Router, private driverService: DriverService) {}
-
-  ngOnInit(): void {
-    initSendOTP({
-      widgetId: "356b736c7649373834323630",
-      tokenAuth: "{token}",
-      exposeMethods: true,
-
-      success: (data: any) => {
-        console.log("GLOBAL SUCCESS:", data);
-      },
-
-      failure: (error: any) => {
-        console.log("GLOBAL FAILURE:", error);
-      }
-    });
-  }
-
-  async sendOtp() {
-    if (!this.phone) return alert("Enter phone number");
-
-    const formatted = "91" + this.phone;
-
-    const exists = await this.driverService.driverExists(formatted);
-
-    if (exists) {
-      sendOtp(formatted,
-        () => {
-          console.log("OTP SENT SUCCESS");
-          this.step = 'otp';
-        },
-        (err: any) => {
-          console.error("OTP SEND FAILED", err);
-          alert("OTP sending failed");
-        }
-      );
-    } else {
-      alert("User not found! Redirecting to signup...");
-      this.router.navigate(['/signup'], {
-        queryParams: { phone: this.phone }
-      });
-    }
-  }
-
-  async verifyOtpCode() {
-
-    verifyOtp(this.otp,
-      async () => {
-
-        console.log("OTP Verified!");
-
-        const driver = await this.driverService.getDriver("91" + this.phone);
-
-        console.log("LOGIN SUCCESS", driver);
-
-        this.router.navigate(['/driver/dashboard']);
-      },
-      () => {
-        alert("Invalid OTP!");
-      }
-    );
-  }
-}
+sabhi ko capital me rkhana hai otp box chota krna hai --
+timing sahi krna hai chat me hai chat 
+booking id ko dhyan dena hai abhi to manually dalr rha hu BOOKING001 ESA TYPE 
+driverIncome -----
+---- detail me -- bit input only number lega otp jaise 
 
 
----------------------------------------------------------
+ <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
 
-<div class="otp-box">
 
-  <h2>Driver Login</h2>
+            my booking
 
-  @if (step === 'phone') {
-    <div>
-      <input [(ngModel)]="phone" placeholder="Phone Number" />
-      <button (click)="sendOtp()">Send OTP</button>
-    </div>
-  }
-
-  @if (step === 'otp') {
-    <div>
-      <input [(ngModel)]="otp" placeholder="Enter OTP" />
-      <button (click)="verifyOtpCode()">Verify OTP</button>
-    </div>
-  }
-
-</div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
 
 
 
+   <!-- Address Details -->
+        <div class="space-y-3 flex justify-between">
+          <div class="flex gap-3">
+            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs text-slate-500 font-semibold mb-1">Pickup Address</p>
+              <p class="text-sm text-slate-900 font-medium">{{ booking.pickup }}</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ booking.address }}</p>
+            </div>
+          </div>
 
-
-
-<!-- <svg class="w-5 h-5 text-blue-700 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.608.951
-                       c.4 1.982 1.944 4.374 3.976 5.82l.951-1.608a1 1 0 011.06-.54l4.435.74a1 1 0 
-                       01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
-            </svg> -->
-
-
-            login hioigya hai 
-            thodda guards or services ko smjh k riegtser me jyenge ok 
-            sabhi ko capital me rkhana hai otp box chota krna hai --
-
-             timing sahi krna hai chat me hai chat 
+          <div class="flex gap-3">
+            <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-xs text-slate-500 font-semibold mb-1">Drop Location</p>
+              <p class="text-sm text-slate-900 font-medium">{{ booking.drop }}</p>
+            </div>
+          </div>
+        </div>

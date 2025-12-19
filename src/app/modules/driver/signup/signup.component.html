@@ -9,7 +9,7 @@
         <!-- <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg> -->
-         <img src="assets/icon.webp" alt="#" class="h-14">
+        <img src="assets/icon.webp" alt="#" class="h-14">
       </div>
       <h1 class="text-3xl font-bold text-white mb-2">Driver Registration</h1>
       <p class="text-blue-100 text-sm font-medium">Join our platform today</p>
@@ -19,13 +19,12 @@
     <div class="flex justify-between mb-8 px-2">
       <div class="flex flex-col items-center" [class.opacity-50]="currentStep > 1">
         <!-- Fixed step 1 circle - now shows number clearly -->
-        <div 
-          class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
+        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
           [ngClass]="currentStep === 1 ? 'bg-blue-600 text-white' : currentStep > 1 ? 'bg-green-500 text-white' : 'bg-white/30 text-white'">
           @if (currentStep > 1) {
-            <span class="text-xl">✓</span>
+          <span class="text-xl">✓</span>
           } @else {
-            <span>1</span>
+          <span>1</span>
           }
         </div>
         <span class="text-xs text-white font-bold">Phone</span>
@@ -35,13 +34,12 @@
 
       <div class="flex flex-col items-center" [class.opacity-50]="currentStep < 2 || currentStep > 2">
         <!-- Fixed step 2 circle - now shows number clearly -->
-        <div 
-          class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
+        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
           [ngClass]="currentStep === 2 ? 'bg-blue-600 text-white' : currentStep > 2 ? 'bg-green-500 text-white' : 'bg-white/30 text-white'">
           @if (currentStep > 2) {
-            <span class="text-xl">✓</span>
+          <span class="text-xl">✓</span>
           } @else {
-            <span>2</span>
+          <span>2</span>
           }
         </div>
         <span class="text-xs text-white font-bold">OTP</span>
@@ -51,8 +49,7 @@
 
       <div class="flex flex-col items-center" [class.opacity-50]="currentStep < 3">
         <!-- Fixed step 3 circle - now shows number clearly -->
-        <div 
-          class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
+        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
           [ngClass]="currentStep === 3 ? 'bg-blue-600 text-white' : 'bg-white/30 text-white'">
           <span>3</span>
         </div>
@@ -64,238 +61,209 @@
     <div class="bg-white rounded-3xl shadow-2xl p-5 min-h-fit">
       <!-- Error Message -->
       @if (error) {
-        <div class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm flex items-start gap-2">
-          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-          </svg>
-          <span class="font-semibold">{{ error }}</span>
-        </div>
+      <div class="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg text-sm flex items-start gap-2">
+        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <span class="font-semibold">{{ error }}</span>
+      </div>
       }
 
       <form [formGroup]="form" class="space-y-4">
         <!-- STEP 1: Phone -->
         @if (currentStep === 1) {
-          <div class="animate-fadeIn space-y-4">
-            <div>
-              <label class="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
-              <div class="flex items-center gap-2 bg-gray-50 rounded-lg border-2 border-gray-300 
+        <div class="animate-fadeIn space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
+            <div class="flex items-center gap-2 bg-gray-50 rounded-lg border-2 border-gray-300 
      focus-within:border-blue-500 focus-within:bg-blue-50 transition-colors">
 
-  <!-- SVG Indian Flag -->
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" class="w-6 h-4 ml-2 rounded-sm" />
+              <!-- SVG Indian Flag -->
+              <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"
+                class="w-6 h-4 ml-2 rounded-sm" />
 
-  <span class="text-gray-700 text-md font-bold px-1">+91</span>
+              <span class="text-gray-700 text-md font-bold px-1">+91</span>
 
-  <input
-    formControlName="phone"
-    type="text"
-    maxlength="10"
-    inputmode="numeric"
-    class="flex-1 px-3 py-3 bg-transparent outline-none text-gray-900 
-           placeholder-gray-500 font-medium text-base"
-    placeholder="Enter 10-digit number">
-</div>
-
-              <p class="text-xs text-gray-600 mt-2 font-medium">✓ We'll send you an OTP to verify</p>
+              <input formControlName="phone" type="text" maxlength="10" inputmode="numeric" class="flex-1 px-3 py-3 bg-transparent outline-none text-gray-900 
+           placeholder-gray-500 font-medium text-base" placeholder="Enter 10-digit number">
             </div>
 
-            <!-- Changed button color from blue gradient to consistent blue -->
-            <button
-              type="button"
-              (click)="sendOtp()"
-              [disabled]="loading"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base mt-4">
-              @if (!loading) {
-                <span>Send OTP</span>
-              } @else {
-                <span class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                  </svg>
-                  Sending...
-                </span>
-              }
-            </button>
+            <p class="text-xs text-gray-600 mt-2 font-medium">✓ We'll send you an OTP to verify</p>
           </div>
+
+          <!-- Changed button color from blue gradient to consistent blue -->
+          <button type="button" (click)="sendOtp()" [disabled]="loading"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base mt-4">
+            @if (!loading) {
+            <span>Send OTP</span>
+            } @else {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              Sending...
+            </span>
+            }
+          </button>
+        </div>
         }
 
         <!-- STEP 2: OTP Verification -->
         @if (currentStep === 2) {
-          <div class="animate-fadeIn space-y-4">
-            <div>
-              <label class="block text-sm font-bold text-gray-900 mb-2">Enter OTP</label>
-              <p class="text-sm text-gray-600 mb-4 font-medium"> OTP sent to +91{{ phoneNumber }}</p>
-              
-              <!-- Improved OTP box styling - larger, clearer, better digit display -->
-              <input
-                formControlName="otp"
-                type="text"
-                maxlength="4"
-                inputmode="numeric"
-                class="w-full px-3 py-2 text-center text-4xl tracking-[0.5em] border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-gray-900 font-bold placeholder-gray-300 bg-gray-50 hover:border-gray-400"
-                placeholder="0000">
-            </div>
+        <div class="animate-fadeIn space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-gray-900 mb-2">Enter OTP</label>
+            <p class="text-sm text-gray-600 mb-4 font-medium"> OTP sent to +91{{ phoneNumber }}</p>
 
-            <!-- Changed button color from green to blue for consistency -->
-            <button
-              type="button"
-              (click)="verifyOtp()"
-              [disabled]="loading"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base">
-              @if (!loading) {
-                <span>Verify OTP</span>
-              } @else {
-                <span class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                  </svg>
-                  Verifying...
-                </span>
-              }
-            </button>
-
-            <div class="text-center space-y-2 pt-2">
-              <p class="text-sm font-medium text-gray-700">
-                @if (resendTimer > 0) {
-                  <span class="text-blue-600 font-bold">⏱️ Resend in {{ resendTimer }}s</span>
-                } @else {
-                  <button
-                    type="button"
-                    (click)="sendOtp()"
-                    class="text-blue-600 hover:text-blue-700 font-bold underline">
-                     Resend OTP
-                  </button>
-                }
-              </p>
-              <button
-                type="button"
-                (click)="changePhone()"
-                class="text-sm text-blue-600 hover:text-blue-700 font-medium underline block w-full">
-                Change phone number
-              </button>
-            </div>
+            <!-- Improved OTP box styling - larger, clearer, better digit display -->
+            <input formControlName="otp" type="text" maxlength="4" inputmode="numeric"
+              class="w-full px-3 py-2 text-center text-4xl tracking-[0.5em] border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-gray-900 font-bold placeholder-gray-300 bg-gray-50 hover:border-gray-400"
+              placeholder="0000">
           </div>
+
+          <!-- Changed button color from green to blue for consistency -->
+          <button type="button" (click)="verifyOtp()" [disabled]="loading"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed text-base">
+            @if (!loading) {
+            <span>Verify OTP</span>
+            } @else {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              Verifying...
+            </span>
+            }
+          </button>
+
+          <div class="text-center space-y-2 pt-2">
+            <p class="text-sm font-medium text-gray-700">
+              @if (resendTimer > 0) {
+              <span class="text-blue-600 font-bold">⏱️ Resend in {{ resendTimer }}s</span>
+              } @else {
+              <button type="button" (click)="sendOtp()" class="text-blue-600 hover:text-blue-700 font-bold underline">
+                Resend OTP
+              </button>
+              }
+            </p>
+            <button type="button" (click)="changePhone()"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium underline block w-full">
+              Change phone number
+            </button>
+          </div>
+        </div>
         }
 
         <!-- STEP 3: Registration Details -->
         @if (currentStep === 3) {
-          <div class="animate-fadeIn space-y-3">
-            <!-- Row 1: Name & City -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">Full Name *</label>
-                <input
-                  formControlName="name"
-                  type="text"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                  placeholder="Your name">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">City *</label>
-                <input
-                  formControlName="city"
-                  type="text"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                  placeholder="City">
-              </div>
-            </div>
-
-            <!-- Address -->
+        <div class="animate-fadeIn space-y-3">
+          <!-- Row 1: Name & City -->
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-bold text-gray-900 mb-1.5">Address *</label>
-              <textarea
-                formControlName="address"
-                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm resize-none text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                placeholder="Full address"
-                rows="2"></textarea>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">Full Name *</label>
+              <input formControlName="name" type="text"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
+                placeholder="Your name">
             </div>
-
-            <!-- Row 2: Cab Type & Vehicle Model -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">Cab Type *</label>
-                <select
-                  formControlName="cabType"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 font-medium bg-gray-50">
-                  <option value="">Select</option>
-                  <option value="hatchback">Hatchback</option>
-                  <option value="sedan">Sedan</option>
-                  <option value="suv">SUV</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle Model *</label>
-                <input
-                  formControlName="vehicleModel"
-                  type="text"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                  placeholder="e.g. Swift">
-              </div>
-            </div>
-
-            <!-- Row 3: Vehicle Number & ID Type -->
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle. Number. *</label>
-                <input
-                  formControlName="vehicleNumber"
-                  type="text"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm uppercase text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                  placeholder="CG10XXXX">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-900 mb-1.5">ID Type *</label>
-                <select
-                  formControlName="idProofType"
-                  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 font-medium bg-gray-50">
-                  <option value="">Select</option>
-                  <option value="Aadhaar">Aadhaar</option>
-                  <option value="DL">License</option>
-                  <option value="PAN">PAN</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- File Upload - Compact -->
             <div>
-              <label class="block text-xs font-bold text-gray-900 mb-1.5">Upload ID *</label>
-              <div class="relative border-2 border-dashed border-blue-400 rounded-lg p-3 text-center hover:border-blue-600 transition cursor-pointer bg-blue-50">
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  (change)="onFileSelect($event)"
-                  class="absolute inset-0 opacity-0 cursor-pointer">
-                <div class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                  <div class="text-left">
-                    <p class="text-xs font-bold text-gray-900">{{ idFile ? idFile.name : 'Click to upload' }}</p>
-                    <p class="text-xs text-gray-600">PNG, JPG, PDF</p>
-                  </div>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">City *</label>
+              <input formControlName="city" type="text"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
+                placeholder="City">
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label class="block text-xs font-bold text-gray-900 mb-1.5">Address *</label>
+            <textarea formControlName="address"
+              class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm resize-none text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
+              placeholder="Full address" rows="2"></textarea>
+          </div>
+
+          <!-- Row 2: Cab Type & Vehicle Model -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">Cab Type *</label>
+              <select formControlName="cabType"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 font-medium bg-gray-50">
+                <option value="">Select</option>
+                <option value="hatchback">Hatchback</option>
+                <option value="sedan">Sedan</option>
+                <option value="suv">SUV</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle Model *</label>
+              <input formControlName="vehicleModel" type="text"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
+                placeholder="e.g. Swift">
+            </div>
+          </div>
+
+          <!-- Row 3: Vehicle Number & ID Type -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle. Number. *</label>
+              <input formControlName="vehicleNumber" type="text"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm uppercase text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
+                placeholder="CG10XXXX">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-900 mb-1.5">ID Type *</label>
+              <select formControlName="idProofType"
+                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 font-medium bg-gray-50">
+                <option value="">Select</option>
+                <option value="Aadhaar">Aadhaar</option>
+                <option value="DL">License</option>
+                <option value="PAN">PAN</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- File Upload - Compact -->
+          <div>
+            <label class="block text-xs font-bold text-gray-900 mb-1.5">Upload ID *</label>
+            <div
+              class="relative border-2 border-dashed border-blue-400 rounded-lg p-3 text-center hover:border-blue-600 transition cursor-pointer bg-blue-50">
+              <input type="file" accept="image/*,.pdf" (change)="onFileSelect($event)"
+                class="absolute inset-0 opacity-0 cursor-pointer">
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <div class="text-left">
+                  <p class="text-xs font-bold text-gray-900">{{ idFile ? idFile.name : 'Click to upload' }}</p>
+                  <p class="text-xs text-gray-600">PNG, JPG, PDF</p>
                 </div>
               </div>
             </div>
-
-            <!-- Submit Button -->
-            <!-- Kept button blue for consistency across all steps -->
-            <button
-              type="button"
-              (click)="submit()"
-              [disabled]="loading"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed mt-4 text-base">
-              @if (!loading) {
-                <span>✓ Register as Driver</span>
-              } @else {
-                <span class="flex items-center justify-center gap-2">
-                  <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                  </svg>
-                  Registering...
-                </span>
-              }
-            </button>
           </div>
+
+          <!-- Submit Button -->
+          <!-- Kept button blue for consistency across all steps -->
+          <button type="button" (click)="submit()" [disabled]="loading"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold hover:shadow-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed mt-4 text-base">
+            @if (!loading) {
+            <span>✓ Register as Driver</span>
+            } @else {
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              Registering...
+            </span>
+            }
+          </button>
+        </div>
         }
       </form>
 
@@ -303,10 +271,11 @@
       <div class="text-center mt-4 pt-4 border-t-2 border-gray-200">
         <p class="text-gray-700 text-sm font-medium">
           Already have an account?
-          <a routerLink="/driver/login" class="text-blue-600 hover:text-blue-700 font-bold">Login</a>
+          <a [routerLink]="[APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]"
+            class="text-blue-600 hover:text-blue-700 font-bold">Login</a>
         </p>
       </div>
     </div>
+
   </div>
 </div>
-

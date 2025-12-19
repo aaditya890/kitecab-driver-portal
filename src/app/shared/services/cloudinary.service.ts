@@ -5,7 +5,7 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class CloudinaryService {
-  cloudName = 'dymjzbdsx';
+  cloudName = 'dv0b2asck';
   uploadPreset = 'driver_docs';
 
   async uploadFile(file: File): Promise<string> {

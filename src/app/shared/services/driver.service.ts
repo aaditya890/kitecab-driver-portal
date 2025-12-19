@@ -22,4 +22,18 @@ export class DriverService {
     const ref = doc(this.fs, "drivers", driver.phone);
     await setDoc(ref, driver);
   }
+
+  async updateCurrentCity(phone: string, city: string) {
+    const ref = doc(this.fs, "drivers", phone);
+    await setDoc(ref, {
+      currentCity: city
+    }, { merge: true });
+  }
+
+  async updateOnlineStatus(phone: string, status: boolean) {
+  const ref = doc(this.fs, 'drivers', phone);
+  await setDoc(ref, { onlineStatus: status }, { merge: true });
+}
+
+
 }

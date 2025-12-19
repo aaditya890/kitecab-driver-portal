@@ -7,18 +7,12 @@
     <!-- Header Section -->
     <div class="text-center mb-6">
       <div class="inline-block bg-white rounded-full mb-2 shadow-xl">
-        <!-- <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-        </svg> -->
         <img src="assets/icon.webp" alt="#" class="h-14">
       </div>
-      <!-- Text color changed from mixed to white for better contrast on dark background -->
       <h1 class="text-3xl font-bold text-white mb-2">Driver Login</h1>
       <p class="text-blue-100 text-sm font-medium">Access your account</p>
     </div>
-
     <!-- Step Indicator -->
-    <!-- Updated step indicators to use same styling as signup with proper ngClass binding -->
     <div class="flex justify-between mb-8 px-2">
       <div class="flex flex-col items-center" [class.opacity-50]="currentStep > 2">
         <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
@@ -34,7 +28,6 @@
 
       <!-- Progress line styling to match signup -->
       <div class="flex-1 h-1 bg-white/30 my-5 mx-2" [class.bg-white]="currentStep > 1"></div>
-
       <div class="flex flex-col items-center" [class.opacity-50]="currentStep < 2">
         <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 transition-all text-base"
           [ngClass]="currentStep === 2 ? 'bg-blue-600 text-white' : 'bg-white/30 text-white'">
@@ -45,9 +38,7 @@
     </div>
 
     <!-- Main Card -->
-    <!-- Updated card styling to match signup: white rounded-3xl with proper shadow -->
     <div class="bg-white rounded-3xl shadow-2xl p-5 min-h-fit">
-
       <!-- Error Message -->
       @if (error) {
       <!-- Updated error styling for better contrast on white background -->
@@ -62,7 +53,6 @@
       }
 
       <form [formGroup]="form" class="space-y-4">
-
         <!-- STEP 1: Phone -->
         @if (currentStep === 1) {
         <div class="animate-fadeIn space-y-4">
@@ -156,16 +146,15 @@
       </form>
 
       <!-- Footer Link -->
-      <!-- Updated footer styling to match signup design with better contrast -->
       <div class="text-center mt-4 pt-4 border-t-2 border-gray-200">
         <p class="text-gray-700 text-sm font-medium">
           Don't have an account?
-          <a routerLink="/driver/signup" class="text-blue-600 hover:text-blue-700 font-bold">Create Account</a>
+          <a [routerLink]="[APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.SIGNUP]"
+            class="text-blue-600 hover:text-blue-700 font-bold">Create Account</a>
         </p>
       </div>
 
     </div>
 
   </div>
-
 </div>

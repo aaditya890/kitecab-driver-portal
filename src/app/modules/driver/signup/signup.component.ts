@@ -5,21 +5,21 @@ import { DriverService } from '../../../shared/services/driver.service';
 import { CloudinaryService } from '../../../shared/services/cloudinary.service';
 import { Driver } from '../../../shared/interfaces/driver.interface';
 import { NgClass } from '@angular/common';
+import { APP_ROUTES } from '../../../routes.constant';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,RouterLink,NgClass],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, NgClass],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent {
- 
   fb = inject(FormBuilder)
   router = inject(Router)
   cloud = inject(CloudinaryService)
   driverService = inject(DriverService)
-
+  APP_ROUTES = APP_ROUTES;
   loading = false
   error: string | null = null
   otpSent = false
@@ -45,7 +45,7 @@ export class SignupComponent {
   ngOnInit() {
     const driver = localStorage.getItem("driver");
     if (driver) {
-      this.router.navigate(["/driver/dashboard"]);
+      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.DASHBOARD]);
     }
   }
 
@@ -163,7 +163,7 @@ export class SignupComponent {
       localStorage.setItem("driver", JSON.stringify(driver))
 
       this.loading = false
-      this.router.navigate(["/driver/dashboard"])
+      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.DASHBOARD]);
 
     } catch {
       this.loading = false
