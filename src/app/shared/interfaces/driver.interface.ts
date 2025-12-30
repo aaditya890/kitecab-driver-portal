@@ -1,16 +1,28 @@
 export interface Driver {
-  id?: string;                     // Firestore doc id (phone number)
+  id?: string;                       // Firestore doc id (phone)
+
   name: string;
-  phone: string;                   // ALWAYS store with country code -> "91XXXXXXXXXX"
+  phone: string;                     // "91XXXXXXXXXX"
   address: string;
-  city: string;                    // Permanent city
-  currentCity: string;             // For live tracking, active city
+
+  city: string;                      // Permanent city
+  currentCity: string;               // Live city
+
   cabType: 'hatchback' | 'sedan' | 'suv';
   vehicleNumber: string;
   vehicleModel: string;
-  idProofUrl: string;              // Cloudinary URL
+
+  // ---- AVAILABILITY ----
+  availableRoutes?: {
+    from: string;
+    to: string;
+  }[];
+
+  idProofUrl: string;
   idProofType: 'Aadhaar' | 'DL' | 'PAN' | 'Voter';
-  onlineStatus: boolean;           // Driver active/offline
+
+  onlineStatus: boolean;
   status: 'approved' | 'pending' | 'blocked';
-  createdAt: any;                  // Firestore Timestamp
+
+  createdAt: any;
 }

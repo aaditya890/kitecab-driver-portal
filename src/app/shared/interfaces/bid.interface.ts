@@ -1,11 +1,19 @@
 export interface Bid {
   id?: string;
-  bookingId: string;
-  driverId: string;
-  bidAmount: number;      // Driver quote
-  commission: number;     // Admin commission
-  netAmount: number;      // bidAmount - commission
+
+  bookingId: string;                // Firestore booking doc id
+  driverId: string;                 // Driver phone / uid
+   bookingCode: string;
+
+  // ---- DRIVER INPUT ----
+  driverBidIncome: number;           // 👈 DRIVER ISME BID KAREGA
+
+  // ---- CALCULATED VALUES ----
+  finalCommission: number;           // baseCommission ± diff
+  totalBookingAmount: number;        // driverBidIncome + finalCommission
+
   driverCity: string;
+
   status: 'pending' | 'accepted' | 'closed';
   timestamp: any;
 }

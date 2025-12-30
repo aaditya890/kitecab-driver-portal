@@ -1,26 +1,86 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
-  <div class="bg-white w-full max-w-sm rounded-2xl shadow-lg p-6">
-    <h2 class="text-2xl font-bold text-slate-900 text-center">Set Your City</h2>
-    <p class="text-xs text-slate-600 text-center mt-1">Bookings assigned based on city</p>
+  <div class="bg-white w-full max-w-sm rounded-2xl shadow-lg p-6 space-y-4">
+
+    <h2 class="text-2xl font-bold text-slate-900 text-center">
+      Set Your Availability
+    </h2>
+    <p class="text-xs text-slate-600 text-center">
+      City & routes where you are available
+    </p>
 
     @if (error) {
-      <div class="bg-red-100 text-red-700 p-3 rounded-lg text-xs mt-3 mb-3">
+      <div class="bg-red-100 text-red-700 p-2 rounded-lg text-xs">
         {{ error }}
       </div>
     }
 
-    <form [formGroup]="form" class="mt-4 space-y-3">
-      <input type="text" formControlName="city" placeholder="Enter city"
-        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm">
+    <!-- CURRENT CITY -->
+    <form [formGroup]="cityForm" class="space-y-2">
+      <label class="text-xs font-bold text-slate-600">Current City</label>
+      <input
+        type="text"
+        formControlName="city"
+        placeholder="Enter current city"
+        class="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm">
 
-      <button type="button" (click)="updateCity()" [disabled]="loading"
-        class="w-full bg-black hover:bg-slate-900 text-white py-2.5 rounded-lg font-bold text-sm transition disabled:opacity-60">
-        @if (!loading) { Update City } @else { Updating... }
+      <button
+        type="button"
+        (click)="updateCity()"
+        [disabled]="loading"
+        class="w-full bg-black text-white py-2 rounded-lg text-sm font-bold">
+        {{ loading ? 'Updating...' : 'Update City' }}
       </button>
     </form>
 
-    <button (click)="backToDashboard()" class="w-full mt-2 text-blue-600 font-semibold text-xs hover:underline">
+    <hr>
+
+    <!-- AVAILABLE ROUTES -->
+    <div class="space-y-2">
+      <p class="text-xs font-bold text-slate-600">Available Routes (Optional)</p>
+
+      <div class="flex gap-2">
+        <input
+          type="text"
+          [(ngModel)]="routeFrom"
+          placeholder="From"
+          class="w-1/2 px-3 py-2 border rounded text-sm">
+
+        <input
+          type="text"
+          [(ngModel)]="routeTo"
+          placeholder="To"
+          class="w-1/2 px-3 py-2 border rounded text-sm">
+      </div>
+
+      <button
+        type="button"
+        (click)="addRoute()"
+        class="w-full bg-slate-900 text-white py-2 rounded text-sm font-bold">
+        Add Route
+      </button>
+
+      <!-- ROUTE LIST (ONE LINE ONLY) -->
+      @if (routes.length > 0) {
+        @for (r of routes; track $index) {
+          <div class="flex items-center justify-between bg-slate-100 px-3 py-2 rounded text-sm">
+            <span class="truncate">
+              {{ r.from }} → {{ r.to }}
+            </span>
+            <button
+              (click)="removeRoute($index)"
+              class="text-red-600 text-xs font-bold ml-2">
+              Remove
+            </button>
+          </div>
+        }
+      }
+    </div>
+
+    <button
+      (click)="backToDashboard()"
+      class="w-full text-blue-600 text-xs font-semibold">
       Back to Dashboard
     </button>
+
   </div>
 </div>

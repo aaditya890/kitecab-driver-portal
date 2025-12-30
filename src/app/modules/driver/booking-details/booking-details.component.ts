@@ -1,100 +1,121 @@
-import { Component, inject } from '@angular/core';
-import { APP_ROUTES } from '../../../routes.constant';
-import { Booking } from '../../../shared/interfaces/booking.interface';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BookingService } from '../../../shared/services/booking.service';
-import { BidService } from '../../../shared/services/bid.service';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Driver } from '../../../shared/interfaces/driver.interface';
+import { Component, inject, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { BookingService } from "../../../shared/services/booking.service";
+import { BidService } from "../../../shared/services/bid.service";
+import { Booking } from "../../../shared/interfaces/booking.interface";
+import { Driver } from "../../../shared/interfaces/driver.interface";
+import { APP_ROUTES } from "../../../routes.constant";
 
 @Component({
-  selector: 'app-booking-details',
+  selector: "app-booking-details",
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule],
-  templateUrl: './booking-details.component.html',
-  styleUrl: './booking-details.component.scss'
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: "./booking-details.component.html",
 })
+export class BookingDetailsComponent implements OnInit {
 
-export class BookingDetailsComponent {
-  private route = inject(ActivatedRoute)
-  private router = inject(Router)
-  private bookingService = inject(BookingService)
-  private bidService = inject(BidService)
-  private fb = inject(FormBuilder)
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private bookingService = inject(BookingService);
+  private bidService = inject(BidService);
+  private fb = inject(FormBuilder);
+   // ✅ SAFE, TYPED KEYS
+  inclusionKeys: Array<keyof Booking['inclusions']> = [
+    'toll',
+    'parking',
+    'waiting'
+  ];
 
-  booking: Booking | null = null
-  driver!: Driver
-  loading = false
-  submitting = false
-  error: string | null = null
+  booking!: Booking;
+  driver!: Driver;
+  isSubmitting = false;
+
   bidForm = this.fb.group({
-    bidAmount: [0, [Validators.required, Validators.min(1)]],
-  })
+    driverIncome: [0, [Validators.required, Validators.min(1)]],
+  });
 
   ngOnInit(): void {
-    const raw = localStorage.getItem("driver")
+    const raw = localStorage.getItem("driver");
     if (!raw) {
-      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN])
-      return
+      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
+      return;
     }
 
-    this.driver = JSON.parse(raw)
-    const bookingId = this.route.snapshot.paramMap.get("id")
+    this.driver = JSON.parse(raw);
 
-    if (bookingId) {
-      this.loadBooking(bookingId)
-    }
+    const id = this.route.snapshot.paramMap.get("id");
+    if (id) this.loadBooking(id);
   }
 
-  async loadBooking(bookingId: string): Promise<void> {
-    this.loading = true
+  async loadBooking(id: string) {
+    const data = await this.bookingService.getBookingById(id);
+    if (!data) return;
+
+    this.booking = data;
+
+    this.bidForm.patchValue({
+      driverIncome: data.baseDriverIncome,
+    });
+  }
+
+  /* ================= CALCULATIONS ================= */
+
+  get driverIncome(): number {
+    return this.bidForm.value.driverIncome ?? this.booking.baseDriverIncome;
+  }
+
+  get totalAmount(): number {
+    return this.booking.baseDriverIncome + this.booking.baseCommission;
+  }
+
+  get finalCommission(): number {
+    return (
+      this.booking.baseCommission +
+      (this.booking.baseDriverIncome - this.driverIncome)
+    );
+  }
+
+  get commissionUp(): boolean {
+    return this.finalCommission > this.booking.baseCommission;
+  }
+
+  get commissionEmoji(): string {
+    if (this.finalCommission > this.booking.baseCommission) return "😄";
+    if (this.finalCommission < this.booking.baseCommission) return "😢";
+    return "🙂";
+  }
+
+  /* ================= ACTIONS ================= */
+
+  async submitBid() {
+    if (!this.booking || !this.bidForm.valid) return;
+
+    this.isSubmitting = true;
     try {
-      const data = await this.bookingService.getBookingById(bookingId)
-      this.booking = {
-        id: bookingId,
-        ...data,
-      } as Booking
-    } catch (err) {
-      this.error = "Failed to load booking"
-      console.error(err)
+      await this.bidService.createBid(
+        this.booking,
+        this.driver.phone,
+        this.driverIncome,
+        this.driver.currentCity
+      );
+
+      this.router.navigate([
+        APP_ROUTES.DRIVER.BASE,
+        APP_ROUTES.DRIVER.DASHBOARD,
+      ]);
+    } catch (e) {
+      console.error("Bid submit failed", e);
     } finally {
-      this.loading = false
+      this.isSubmitting = false;
     }
   }
 
-  async submitBid(): Promise<void> {
-    if (!this.booking || !this.driver || this.bidForm.invalid) return
-
-    this.submitting = true
-    try {
-      const bidAmount = this.bidForm.get("bidAmount")?.value || 0
-
-      await this.bidService.createBid({
-        bookingId: this.booking.id,
-        driverId: this.driver.phone,
-        bidAmount,
-        commission: this.booking.commissionAmount,
-        netAmount: bidAmount - this.booking.commissionAmount,
-        driverCity: this.driver.currentCity,
-        status: "pending",
-        timestamp: new Date(),
-      })
-      
-      this.router.navigate([APP_ROUTES.DRIVER.BASE, "dashboard"])
-    } catch (err) {
-      this.error = "Failed to submit bid"
-      console.error(err)
-    } finally {
-      this.submitting = false
-    }
-  }
-
-  goBack(): void {
-    this.router.navigate([APP_ROUTES.DRIVER.BASE, "dashboard"])
-  }
-
-  get netAmount(): number {
-    const bidAmount = this.bidForm.get("bidAmount")?.value || 0
-    return bidAmount - (this.booking?.commissionAmount || 0)
+  back() {
+    this.router.navigate([
+      APP_ROUTES.DRIVER.BASE,
+      APP_ROUTES.DRIVER.DASHBOARD,
+    ]);
   }
 }

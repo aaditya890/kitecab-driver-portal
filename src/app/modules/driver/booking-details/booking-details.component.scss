@@ -1,0 +1,97 @@
+// Custom transitions and animations
+:host {
+  display: block;
+}
+
+input[type="number"] {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+// Focus states for better UX
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+button {
+  transition: all 0.2s ease;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Scrollbar styling for compact modal
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+  
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Additional styles for booking details
+.booking-details {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+  .header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    
+    .label {
+      font-weight: bold;
+    }
+    
+    .value {
+      color: #333333;
+    }
+  }
+  
+  .guest-info {
+    margin-bottom: 20px;
+    
+    .name {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    
+    .email {
+      font-size: 16px;
+      color: #555555;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    
+    button {
+      margin-left: 10px;
+    }
+  }
+}

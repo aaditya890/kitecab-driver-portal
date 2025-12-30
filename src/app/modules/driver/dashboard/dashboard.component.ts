@@ -17,24 +17,29 @@ import { Bid } from '../../../shared/interfaces/bid.interface';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
- private router = inject(Router);
+
+  private router = inject(Router);
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
   private bidService = inject(BidService);
+  myBidsWithBooking: Array<{
+    bid: Bid;
+    booking: Booking | null;
+  }> = [];
+
 
   driver!: Driver;
 
   openBookings: Booking[] = [];
   myAcceptedBookings: Booking[] = [];
 
-  // ✅ NEW
   myBids: Bid[] = [];
-  myBidBookingIds: any[] = [];
+  myBidBookingIds: string[] = [];
 
-  // ✅ TAB STATE
   activeTab: 'available' | 'bids' | 'accepted' = 'available';
 
   ngOnInit(): void {
+    console.log(this.bookingService.getOpenBookings)
     const raw = localStorage.getItem('driver');
     if (!raw) {
       this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
@@ -43,7 +48,7 @@ export class DashboardComponent {
 
     this.driver = JSON.parse(raw);
 
-    // ✅ CACHE (NO BLANK UI)
+    // ⚡ Cache (instant UI)
     const cached = sessionStorage.getItem('dashboard_cache');
     if (cached) {
       const parsed = JSON.parse(cached);
@@ -54,26 +59,38 @@ export class DashboardComponent {
     this.refreshBookings();
   }
 
-  async refreshBookings() {
-    try {
-      const dashboard = await this.bookingService.getDashboardData(this.driver.phone);
+ async refreshBookings() {
+  try {
+    const dashboard = await this.bookingService.getDashboardData(this.driver.phone);
 
-      this.openBookings = dashboard.open;
-      this.myAcceptedBookings = dashboard.mine;
+    this.openBookings = dashboard.open;
+    this.myAcceptedBookings = dashboard.mine;
 
-      // ✅ LOAD MY BIDS
-      this.myBids = await this.bidService.getMyBids(this.driver.phone);
-      this.myBidBookingIds = this.myBids.map(b => b.bookingId);
+    // 🔹 MY BIDS
+    this.myBids = await this.bidService.getMyBids(this.driver.phone);
+    this.myBidBookingIds = this.myBids.map(b => b.bookingId);
 
-      sessionStorage.setItem(
-        'dashboard_cache',
-        JSON.stringify(dashboard)
-      );
+    // 🔹 JOIN BID + BOOKING (IMPORTANT PART)
+    this.myBidsWithBooking = [];
 
-    } catch (e) {
-      console.error('Dashboard refresh error', e);
+    for (const bid of this.myBids) {
+      const booking = await this.bookingService.getBookingById(bid.bookingId);
+      this.myBidsWithBooking.push({
+        bid,
+        booking
+      });
     }
+
+    sessionStorage.setItem(
+      'dashboard_cache',
+      JSON.stringify(dashboard)
+    );
+
+  } catch (e) {
+    console.error('Dashboard refresh error', e);
   }
+}
+
 
   async toggleOnline() {
     this.driver.onlineStatus = !this.driver.onlineStatus;
@@ -91,7 +108,7 @@ export class DashboardComponent {
     ]);
   }
 
-  navigateToBookingDetails(id: any) {
+  navigateToBookingDetails(id: string) {
     if (!id) return;
     this.router.navigate([
       APP_ROUTES.DRIVER.BASE,
