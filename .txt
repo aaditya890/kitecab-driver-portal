@@ -1,12 +1,17 @@
-sabhi ko capital me rkhana hai otp box chota krna hai --
-timing sahi krna hai chat me hai chat 
 
 ---- detail me -- bit input only number lega otp jaise 
 -- bit m bookignCode bhi bhejna hai ok 
 --- ui me kam krna hia 
 
+
+ "/" htana hai 
+ waiting htana hai
+ accepted me jo bit amount rhega vo dikhan chahiye 
+ auto delete my accepted bookings
+ btn k color 
+
  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              <path stroke-linecap="round" strooke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
             </svg>
             my booking
 

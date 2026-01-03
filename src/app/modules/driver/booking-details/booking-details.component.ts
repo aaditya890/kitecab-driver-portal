@@ -25,7 +25,7 @@ export class BookingDetailsComponent implements OnInit {
   inclusionKeys: Array<keyof Booking['inclusions']> = [
     'toll',
     'parking',
-    'waiting'
+    // 'waiting'
   ];
 
   booking!: Booking;
@@ -36,29 +36,36 @@ export class BookingDetailsComponent implements OnInit {
     driverIncome: [0, [Validators.required, Validators.min(1)]],
   });
 
-  ngOnInit(): void {
-    const raw = localStorage.getItem("driver");
-    if (!raw) {
-      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
-      return;
-    }
-
-    this.driver = JSON.parse(raw);
-
-    const id = this.route.snapshot.paramMap.get("id");
-    if (id) this.loadBooking(id);
+ngOnInit(): void {
+  const raw = localStorage.getItem("driver");
+  if (!raw) {
+    this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
+    return;
   }
 
-  async loadBooking(id: string) {
-    const data = await this.bookingService.getBookingById(id);
-    if (!data) return;
+  this.driver = JSON.parse(raw);
 
-    this.booking = data;
+  const id = this.route.snapshot.paramMap.get("id");
+  const bidAmount = this.route.snapshot.queryParamMap.get('bidAmount');
 
-    this.bidForm.patchValue({
-      driverIncome: data.baseDriverIncome,
-    });
-  }
+  if (id) this.loadBooking(id, bidAmount);
+}
+
+
+async loadBooking(id: string, bidAmount: string | null) {
+  const data = await this.bookingService.getBookingById(id);
+  if (!data) return;
+
+  this.booking = data;
+
+  this.bidForm.patchValue({
+    driverIncome: bidAmount
+      ? Number(bidAmount)       // ✅ EDIT CASE
+      : data.baseDriverIncome   // ✅ NEW BID CASE
+  });
+}
+
+
 
   /* ================= CALCULATIONS ================= */
 
@@ -67,19 +74,24 @@ export class BookingDetailsComponent implements OnInit {
   }
 
   get totalAmount(): number {
-    return this.booking.baseDriverIncome + this.booking.baseCommission;
-  }
+  return this.driverIncome + this.finalCommission;
+}
 
-  get finalCommission(): number {
-    return (
-      this.booking.baseCommission +
-      (this.booking.baseDriverIncome - this.driverIncome)
-    );
-  }
 
-  get commissionUp(): boolean {
-    return this.finalCommission > this.booking.baseCommission;
-  }
+get finalCommission(): number {
+  const commission =
+    this.booking.baseCommission +
+    (this.booking.baseDriverIncome - this.driverIncome);
+
+  return Math.max(0, commission); // ❗ never negative
+}
+
+
+
+get commissionUp(): boolean {
+  return this.finalCommission >= this.booking.baseCommission;
+}
+
 
   get commissionEmoji(): string {
     if (this.finalCommission > this.booking.baseCommission) return "😄";
@@ -94,12 +106,13 @@ export class BookingDetailsComponent implements OnInit {
 
     this.isSubmitting = true;
     try {
-      await this.bidService.createBid(
-        this.booking,
-        this.driver.phone,
-        this.driverIncome,
-        this.driver.currentCity
-      );
+     await this.bidService.createOrUpdateBid(
+  this.booking,
+  this.driver.phone,
+  this.driverIncome,
+  this.driver.currentCity
+);
+
 
       this.router.navigate([
         APP_ROUTES.DRIVER.BASE,

@@ -2,10 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   Firestore,
   getDocs,
   query,
-  where
+  updateDoc,
+  where,
 } from '@angular/fire/firestore';
 import { Bid } from '../interfaces/bid.interface';
 import { Booking } from '../interfaces/booking.interface';
@@ -16,40 +19,73 @@ import { Booking } from '../interfaces/booking.interface';
 export class BidService {
   private fs = inject(Firestore);
 
-  async createBid(
+  /* =====================================================
+     CREATE OR UPDATE BID  (🔥 MAIN FIX)
+     Rule: 1 booking + 1 driver = ONLY ONE BID
+  ===================================================== */
+  async createOrUpdateBid(
     booking: Booking,
     driverId: string,
     driverBidIncome: number,
     driverCity: string
   ) {
-    // ✅ TOTAL FIXED
+    // ✅ TOTAL (ADMIN FIXED)
     const totalBookingAmount =
       booking.baseDriverIncome + booking.baseCommission;
 
-    // ✅ COMMISSION ADJUSTS
-    const finalCommission =
-      totalBookingAmount - driverBidIncome;
+    // ✅ COMMISSION (never negative)
+    const finalCommission = Math.max(
+      0,
+      totalBookingAmount - driverBidIncome
+    );
 
-    const bid = {
+    const ref = collection(this.fs, 'bids');
+
+    // 🔍 Check if bid already exists
+    const q = query(
+      ref,
+      where('bookingId', '==', booking.id),
+      where('driverId', '==', driverId)
+    );
+
+    const snap = await getDocs(q);
+
+    // 🟢 CASE 1: EXISTING BID → UPDATE
+    if (!snap.empty) {
+      const existingDoc = snap.docs[0];
+
+      await updateDoc(doc(this.fs, 'bids', existingDoc.id), {
+        driverBidIncome,
+        finalCommission,
+        totalBookingAmount,
+        driverCity,
+        status: 'pending',       // edit keeps bid pending
+        timestamp: new Date(),
+      });
+
+      return existingDoc.id;
+    }
+
+    // 🟢 CASE 2: FIRST BID → CREATE
+    const bid: Omit<Bid, 'id'> = {
       bookingId: booking.id!,
-      bookingCode: booking.bookingCode,      // ✅ THIS IS KEY
+      bookingCode: booking.bookingCode,
       driverId,
       driverBidIncome,
       driverCity,
-
       finalCommission,
       totalBookingAmount,
-
       status: 'pending',
       timestamp: new Date(),
     };
 
-    const ref = collection(this.fs, 'bids');
-    return addDoc(ref, bid);
+    const docRef = await addDoc(ref, bid);
+    return docRef.id;
   }
 
-
-  // ✅ GET ALL BIDS OF DRIVER
+  /* =====================================================
+     GET ALL BIDS OF DRIVER
+  ===================================================== */
   async getMyBids(driverId: string): Promise<Bid[]> {
     const ref = collection(this.fs, 'bids');
     const q = query(ref, where('driverId', '==', driverId));
@@ -57,13 +93,23 @@ export class BidService {
 
     return snap.docs.map(d => ({
       id: d.id,
-      ...(d.data() as Bid)
+      ...(d.data() as Bid),
     }));
   }
 
-  // ✅ USED FOR DISABLE BUTTON LOGIC
+  /* =====================================================
+     USED FOR DISABLE "VIEW & ACCEPT" BUTTON
+  ===================================================== */
   async getMyBidBookingIds(driverId: string): Promise<string[]> {
     const bids = await this.getMyBids(driverId);
     return bids.map(b => b.bookingId);
+  }
+
+  /* =====================================================
+     DELETE BID (ONLY PENDING)
+  ===================================================== */
+  async deleteBid(bidId: string) {
+    const ref = doc(this.fs, 'bids', bidId);
+    return deleteDoc(ref);
   }
 }

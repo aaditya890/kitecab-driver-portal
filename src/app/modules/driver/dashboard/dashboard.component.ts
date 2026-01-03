@@ -31,7 +31,10 @@ export class DashboardComponent {
   driver!: Driver;
 
   openBookings: Booking[] = [];
-  myAcceptedBookings: Booking[] = [];
+myAcceptedBookings: Array<{
+  booking: Booking;
+  bid: Bid;
+}> = [];
 
   myBids: Bid[] = [];
   myBidBookingIds: string[] = [];
@@ -59,37 +62,46 @@ export class DashboardComponent {
     this.refreshBookings();
   }
 
- async refreshBookings() {
+async refreshBookings() {
   try {
     const dashboard = await this.bookingService.getDashboardData(this.driver.phone);
 
     this.openBookings = dashboard.open;
-    this.myAcceptedBookings = dashboard.mine;
+    this.myAcceptedBookings = [];
 
-    // 🔹 MY BIDS
-    this.myBids = await this.bidService.getMyBids(this.driver.phone);
-    this.myBidBookingIds = this.myBids.map(b => b.bookingId);
+    // 🔹 fetch bids ONCE
+    const myBids = await this.bidService.getMyBids(this.driver.phone);
 
-    // 🔹 JOIN BID + BOOKING (IMPORTANT PART)
-    this.myBidsWithBooking = [];
+    for (const booking of dashboard.mine) {
+      const acceptedBid = myBids.find(
+        b => b.bookingId === booking.id && b.status === 'accepted'
+      );
 
-    for (const bid of this.myBids) {
-      const booking = await this.bookingService.getBookingById(bid.bookingId);
-      this.myBidsWithBooking.push({
-        bid,
-        booking
-      });
+      if (acceptedBid) {
+        this.myAcceptedBookings.push({
+          booking,
+          bid: acceptedBid
+        });
+      }
     }
 
-    sessionStorage.setItem(
-      'dashboard_cache',
-      JSON.stringify(dashboard)
-    );
+    // 🔹 MY BIDS TAB
+    this.myBids = myBids;
+    this.myBidBookingIds = myBids.map(b => b.bookingId);
+
+    this.myBidsWithBooking = [];
+    for (const bid of myBids) {
+      const booking = await this.bookingService.getBookingById(bid.bookingId);
+      this.myBidsWithBooking.push({ bid, booking });
+    }
+
+    sessionStorage.setItem('dashboard_cache', JSON.stringify(dashboard));
 
   } catch (e) {
     console.error('Dashboard refresh error', e);
   }
 }
+
 
 
   async toggleOnline() {
@@ -124,4 +136,37 @@ export class DashboardComponent {
       APP_ROUTES.DRIVER.LOGIN
     ]);
   }
+
+ editBid(bid: Bid) {
+  this.router.navigate(
+    [
+      APP_ROUTES.DRIVER.BASE,
+      'booking',
+      bid.bookingId
+    ],
+    {
+      queryParams: {
+        bidAmount: bid.driverBidIncome
+      }
+    }
+  );
+}
+
+async deleteBid(bidId: string) {
+  const ok = confirm('Are you sure you want to delete this bid?');
+  if (!ok) return;
+
+  await this.bidService.deleteBid(bidId);
+
+  // ⚡ instant UX (optimistic)
+  this.myBids = this.myBids.filter(b => b.id !== bidId);
+  this.myBidBookingIds = this.myBids.map(b => b.bookingId);
+  this.myBidsWithBooking = this.myBidsWithBooking.filter(
+    x => x.bid.id !== bidId
+  );
+
+  // optional full refresh (safe)
+  await this.refreshBookings();
+}
+
 }

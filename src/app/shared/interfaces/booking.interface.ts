@@ -5,9 +5,7 @@ export interface Booking {
   pickup: string;
   drop: string;
   address?: string;
-
-
-
+  
   // ---- RIDE TYPE ----
   rideType: 'oneway' | 'roundtrip' | 'localrental';
 
@@ -26,7 +24,7 @@ export interface Booking {
   inclusions: {
     toll: 'included' | 'excluded';
     parking: 'included' | 'excluded';
-    waiting: 'included' | 'excluded';
+    // waiting: 'included' | 'excluded';
   };
 
   // ---- ASSIGNMENT ----
