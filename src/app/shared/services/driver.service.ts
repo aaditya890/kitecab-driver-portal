@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Driver } from '../interfaces/driver.interface';
-import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, onSnapshot } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class DriverService {
@@ -41,4 +41,13 @@ export class DriverService {
     const ref = doc(this.fs, 'drivers', phone);
     await setDoc(ref, { onlineStatus: status }, { merge: true });
   }
+
+  listenToDriver(phone: string, cb: (d: Driver) => void) {
+  const ref = doc(this.fs, 'drivers', phone);
+  return onSnapshot(ref, snap => {
+    if (snap.exists()) {
+      cb(snap.data() as Driver);
+    }
+  });
+}
 }

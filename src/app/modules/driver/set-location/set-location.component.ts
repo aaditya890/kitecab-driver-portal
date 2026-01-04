@@ -4,6 +4,7 @@ import { APP_ROUTES } from '../../../routes.constant';
 import { DriverService } from '../../../shared/services/driver.service';
 import { Driver } from '../../../shared/interfaces/driver.interface';
 import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-set-location',
@@ -12,7 +13,6 @@ import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angu
   templateUrl: './set-location.component.html',
 })
 export class SetLocationComponent {
-
   private router = inject(Router);
   private driverService = inject(DriverService);
   private fb = inject(FormBuilder);
@@ -22,11 +22,14 @@ export class SetLocationComponent {
   error: string | null = null;
 
   routes: { from: string; to: string }[] = [];
-  routeFrom = '';
-  routeTo = '';
 
   cityForm = this.fb.group({
     city: ['', Validators.required],
+  });
+
+  routeForm = this.fb.group({
+    from: ['', Validators.required],
+    to: ['', Validators.required],
   });
 
   ngOnInit(): void {
@@ -37,57 +40,52 @@ export class SetLocationComponent {
     }
 
     this.driver = JSON.parse(raw);
-
     this.cityForm.patchValue({
       city: this.driver.currentCity || ''
     });
 
     this.routes = Array.isArray(this.driver.availableRoutes)
-      ? this.driver.availableRoutes
+      ? [...this.driver.availableRoutes]
       : [];
+
+    console.log('✅ Routes loaded:', this.routes);
   }
 
   async updateCity() {
-    if (this.cityForm.invalid) {
-      this.error = 'Please enter city';
-      return;
-    }
+    if (this.cityForm.invalid) return;
 
     this.loading = true;
-    this.error = null;
-
     try {
       const city = this.cityForm.value.city!;
+
       await this.driverService.updateCurrentCity(this.driver.phone, city);
 
-      this.driver.currentCity = city;
-      localStorage.setItem('driver', JSON.stringify(this.driver));
+      // 🔴 FETCH UPDATED DRIVER
+      const freshDriver = await this.driverService.getDriver(this.driver.phone);
 
-      this.cityForm.reset();
+      if (freshDriver) {
+        this.driver = freshDriver;
+        localStorage.setItem('driver', JSON.stringify(freshDriver));
+      }
 
-      console.log('✅ City updated successfully:', city);
-    } catch (e) {
-      console.error(e);
-      this.error = 'Failed to update city';
     } finally {
       this.loading = false;
     }
   }
 
+
   async addRoute() {
-    if (!this.routeFrom || !this.routeTo) return;
+    if (this.routeForm.invalid) return;
 
-    this.routes.push({ from: this.routeFrom, to: this.routeTo });
+    const route = this.routeForm.value as { from: string; to: string };
 
-    this.routeFrom = '';
-    this.routeTo = '';
+    this.routes.push(route);
+    this.routeForm.reset();
 
     await this.driverService.updateAvailableRoutes(this.driver.phone, this.routes);
 
     this.driver.availableRoutes = this.routes;
     localStorage.setItem('driver', JSON.stringify(this.driver));
-
-    console.log('✅ Route added:', this.routes[this.routes.length - 1]);
   }
 
   async removeRoute(index: number) {
@@ -97,8 +95,6 @@ export class SetLocationComponent {
 
     this.driver.availableRoutes = this.routes;
     localStorage.setItem('driver', JSON.stringify(this.driver));
-
-    console.log('🗑 Route removed, remaining:', this.routes);
   }
 
   backToDashboard() {

@@ -8,16 +8,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DriverService } from '../../../shared/services/driver.service';
 import { BidService } from '../../../shared/services/bid.service';
 import { Bid } from '../../../shared/interfaces/bid.interface';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,NgClass],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-
+  loadingDashboard:boolean = true;
   private router = inject(Router);
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
@@ -41,64 +42,74 @@ myAcceptedBookings: Array<{
 
   activeTab: 'available' | 'bids' | 'accepted' = 'available';
 
-  ngOnInit(): void {
-    console.log(this.bookingService.getOpenBookings)
-    const raw = localStorage.getItem('driver');
-    if (!raw) {
-      this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
-      return;
-    }
-
-    this.driver = JSON.parse(raw);
-
-    // ⚡ Cache (instant UI)
-    const cached = sessionStorage.getItem('dashboard_cache');
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      this.openBookings = parsed.open || [];
-      this.myAcceptedBookings = parsed.mine || [];
-    }
-
-    this.refreshBookings();
+  
+async ngOnInit() {
+  const raw = localStorage.getItem('driver');
+  if (!raw) {
+    this.router.navigate([APP_ROUTES.DRIVER.LOGIN]);
+    return;
   }
 
+  const cached = JSON.parse(raw);
+
+  // 🔴 ALWAYS FETCH FRESH DRIVER FROM DB
+  const freshDriver = await this.driverService.getDriver(cached.phone);
+
+  if (!freshDriver) {
+    this.logout();
+    return;
+  }
+
+  this.driver = freshDriver;
+
+  // 🔄 update local cache
+  localStorage.setItem('driver', JSON.stringify(freshDriver));
+
+  this.refreshBookings();
+}
+
+
 async refreshBookings() {
+  this.loadingDashboard = true;   // 🔴 START LOADING
+
   try {
-    const dashboard = await this.bookingService.getDashboardData(this.driver.phone);
+    // 🔹 fetch everything FIRST
+    const [dashboard, myBids] = await Promise.all([
+      this.bookingService.getDashboardData(this.driver.phone),
+      this.bidService.getMyBids(this.driver.phone),
+    ]);
 
-    this.openBookings = dashboard.open;
-    this.myAcceptedBookings = [];
-
-    // 🔹 fetch bids ONCE
-    const myBids = await this.bidService.getMyBids(this.driver.phone);
+    // 🔹 prepare accepted bookings
+    const accepted: Array<{ booking: Booking; bid: Bid }> = [];
 
     for (const booking of dashboard.mine) {
       const acceptedBid = myBids.find(
         b => b.bookingId === booking.id && b.status === 'accepted'
       );
-
       if (acceptedBid) {
-        this.myAcceptedBookings.push({
-          booking,
-          bid: acceptedBid
-        });
+        accepted.push({ booking, bid: acceptedBid });
       }
     }
 
-    // 🔹 MY BIDS TAB
-    this.myBids = myBids;
-    this.myBidBookingIds = myBids.map(b => b.bookingId);
+    // 🔹 prepare bids with booking
+    const bidsWithBooking: Array<{ bid: Bid; booking: Booking | null }> = [];
 
-    this.myBidsWithBooking = [];
     for (const bid of myBids) {
       const booking = await this.bookingService.getBookingById(bid.bookingId);
-      this.myBidsWithBooking.push({ bid, booking });
+      bidsWithBooking.push({ bid, booking });
     }
 
-    sessionStorage.setItem('dashboard_cache', JSON.stringify(dashboard));
+    // ✅ ATOMIC COMMIT (ONLY ONE UI UPDATE)
+    this.openBookings = dashboard.open;
+    this.myBids = myBids;
+    this.myBidBookingIds = myBids.map(b => b.bookingId);
+    this.myAcceptedBookings = accepted;
+    this.myBidsWithBooking = bidsWithBooking;
 
   } catch (e) {
     console.error('Dashboard refresh error', e);
+  } finally {
+    this.loadingDashboard = false;  // 🟢 END LOADING
   }
 }
 
