@@ -29,6 +29,8 @@ export interface Booking {
 
   // ---- ASSIGNMENT ----
   status: 'active' | 'inactive' | 'assigned' | 'completed' | 'paid';
+    // 🔥 NEW
+  customerPdfUrl?: string;   // <-- ADMIN UPLOADS THIS
   selectedDriverId?: string;
 
   // ---- PAYMENT (FUTURE) ----

@@ -113,4 +113,20 @@ async createBooking(data: Booking) {
   const ref = collection(this.fs, 'bookings');
   return addDoc(ref, booking);
 }
+
+// ✅ ADMIN: ASSIGN DRIVER + UPLOAD CUSTOMER PDF
+async assignDriverWithPdf(
+  bookingId: string,
+  driverId: string,
+  customerPdfUrl: string
+) {
+  const ref = doc(this.fs, 'bookings', bookingId);
+
+  await updateDoc(ref, {
+    selectedDriverId: driverId,
+    status: 'assigned',
+    customerPdfUrl: customerPdfUrl,
+  });
+}
+
 }

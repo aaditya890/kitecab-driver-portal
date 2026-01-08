@@ -180,4 +180,9 @@ async deleteBid(bidId: string) {
   await this.refreshBookings();
 }
 
+openCustomerPdf(url: string) {
+  window.open(url, '_blank');
+}
+
+
 }
