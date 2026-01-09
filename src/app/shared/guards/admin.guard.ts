@@ -1,5 +1,6 @@
 import { CanActivateFn } from '@angular/router';
 
-export const adminGuard: CanActivateFn = (route, state) => {
-  return true;
+export const adminGuard: CanActivateFn = () => {
+  const admin = localStorage.getItem('admin');
+  return !!admin;
 };

@@ -5,39 +5,40 @@ import { CreateBookingComponent } from './create-booking/create-booking.componen
 import { BookingListComponent } from './booking-list/booking-list.component';
 import { BookingDetailsComponent } from './booking-details/booking-details.component';
 import { adminGuard } from '../../shared/guards/admin.guard';
+import { APP_ROUTES } from '../../routes.constant';
 
 
 export const adminRoutes: Routes = [
 
-  // LOGIN PAGE (no guard)
-  { path: 'login', component: LoginComponent },
-
-  // MAIN ADMIN DASHBOARD
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: APP_ROUTES.ADMIN.LOGIN,
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)
+  },
+
+  { 
+    path: APP_ROUTES.ADMIN.DASHBOARD,
+    loadComponent: () =>
+      import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
     canActivate: [adminGuard]
   },
 
-  // CREATE BOOKING
   {
-    path: 'create-booking',
-    component: CreateBookingComponent,
+    path: APP_ROUTES.ADMIN.DRIVERS,
+    loadComponent: () =>
+      import('./drivers/drivers.component').then(m => m.DriversComponent),
     canActivate: [adminGuard]
   },
 
-  // BOOKING LIST
   {
-    path: 'bookings',
-    component: BookingListComponent,
+    path: APP_ROUTES.ADMIN.BOOKING_LIST,
+    loadComponent: () =>
+      import('./booking-list/booking-list.component').then(m => m.BookingListComponent),
     canActivate: [adminGuard]
   },
-
-  // BOOKING DETAILS (bids list)
   {
-    path: 'booking/:id',
-    component: BookingDetailsComponent,
+    path: APP_ROUTES.ADMIN.BOOKING_DETAILS,
+    loadComponent: () =>
+      import('./booking-details/booking-details.component').then(m => m.BookingDetailsComponent),
     canActivate: [adminGuard]
   }
-
 ];

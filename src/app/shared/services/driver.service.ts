@@ -30,12 +30,12 @@ export class DriverService {
   }
 
   async updateAvailableRoutes(
-  phone: string,
-  routes: { from: string; to: string }[]
-) {
-  const ref = doc(this.fs, 'drivers', phone);
-  await setDoc(ref, { availableRoutes: routes }, { merge: true });
-}
+    phone: string,
+    routes: { from: string; to: string }[]
+  ) {
+    const ref = doc(this.fs, 'drivers', phone);
+    await setDoc(ref, { availableRoutes: routes }, { merge: true });
+  }
 
   async updateOnlineStatus(phone: string, status: boolean) {
     const ref = doc(this.fs, 'drivers', phone);
@@ -43,11 +43,11 @@ export class DriverService {
   }
 
   listenToDriver(phone: string, cb: (d: Driver) => void) {
-  const ref = doc(this.fs, 'drivers', phone);
-  return onSnapshot(ref, snap => {
-    if (snap.exists()) {
-      cb(snap.data() as Driver);
-    }
-  });
-}
+    const ref = doc(this.fs, 'drivers', phone);
+    return onSnapshot(ref, snap => {
+      if (snap.exists()) {
+        cb(snap.data() as Driver);
+      }
+    });
+  }
 }

@@ -17,9 +17,15 @@ export const routes: Routes = [
   },
 
   // DEFAULT ROUTE → DRIVER LOGIN
-  {
+  // {
+  //   path: '',
+  //   redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}`,
+  //   pathMatch: 'full'
+  // },
+
+   {
     path: '',
-    redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}`,
+    redirectTo: `${APP_ROUTES.ADMIN.BASE}/${APP_ROUTES.ADMIN.LOGIN}`,
     pathMatch: 'full'
   },
 

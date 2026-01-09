@@ -15,17 +15,18 @@ import { APP_ROUTES } from '../../routes.constant';
 export const driverRoutes: Routes = [
 
   { path: APP_ROUTES.DRIVER.LOGIN, component: LoginComponent },
+
   {
     path: APP_ROUTES.DRIVER.SIGNUP,
     loadComponent: () =>
       import('./signup/signup.component').then(m => m.SignupComponent)
   },
+
   {
     path: APP_ROUTES.DRIVER.PROFILE,
     component: ProfileComponent,
     canActivate: [driverGuard]
   },
-
 
   {
     path: APP_ROUTES.DRIVER.DASHBOARD,
@@ -33,20 +34,17 @@ export const driverRoutes: Routes = [
     canActivate: [driverGuard, approvedDriverGuard]
   },
 
-
   {
     path: APP_ROUTES.DRIVER.SET_LOCATION,
     component: SetLocationComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   },
 
-
   {
     path: APP_ROUTES.DRIVER.BOOKINGS,
     component: BookingsComponent,
     canActivate: [driverGuard, approvedDriverGuard]
   },
-
 
   {
     path: APP_ROUTES.DRIVER.BOOKING_DETAILS,
