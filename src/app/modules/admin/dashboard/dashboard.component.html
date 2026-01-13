@@ -1,1 +1,638 @@
-<p>dashboard works!</p>
+@if (loadingDashboard) {
+<div class="min-h-screen bg-slate-950 flex items-center justify-center">
+  <div class="text-center">
+    <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+    <p class="text-white text-sm font-semibold">Loading Dashboard...</p>
+  </div>
+</div>
+} @else {
+<!-- Dashboard Container -->
+<div class="min-h-screen bg-slate-950 text-slate-900 pb-8">
+  <div class="max-w-md mx-auto px-4 py-5 space-y-4">
+
+    <!-- HEADER: Premium Gradient with Decorative Effects -->
+    <div
+      class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+      <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/15 rounded-full blur-3xl"></div>
+      <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-purple-400/20 rounded-full blur-2xl"></div>
+
+      <div class="flex items-center justify-between relative z-10">
+        <div>
+          <h1 class="text-3xl font-black text-white tracking-tight">Admin Panel</h1>
+          <div class="flex items-center gap-2 mt-2">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+            <span class="text-sm font-bold text-indigo-100">{{ adminName }}</span>
+          </div>
+        </div>
+        <button (click)="logout()" title="Logout"
+          class="p-3 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl transition-all border border-white/30">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ACTION CARDS: Quick Access with Icons -->
+    <div class="grid grid-cols-2 gap-3">
+      <button (click)="goToCreateBooking()" title="Create new booking"
+        class="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-2xl p-4 text-left relative overflow-hidden active:scale-95 transition-all shadow-lg">
+        <div class="absolute -right-3 -top-3 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+        <svg class="w-6 h-6 text-white mb-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        <p class="text-xs font-bold text-blue-100 uppercase tracking-wider">Create Booking</p>
+      </button>
+
+      <button (click)="goToDrivers()" title="Manage drivers"
+        class="bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 rounded-2xl p-4 text-left relative overflow-hidden active:scale-95 transition-all shadow-lg">
+        <div class="absolute -right-3 -top-3 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
+        <svg class="w-6 h-6 text-white mb-2 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 12H9m6 0a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+        </svg>
+        <p class="text-xs font-bold text-emerald-100 uppercase tracking-wider">Manage Drivers</p>
+      </button>
+    </div>
+
+    <!-- TABS: Modern Tab Navigation -->
+    <div class="bg-white rounded-2xl p-1.5 shadow-md flex gap-1.5 border border-slate-100">
+      <button (click)="setTab('bids')"
+        class="flex-1 py-2.5 text-xs font-bold uppercase rounded-lg transition-all tracking-wide"
+        [class.bg-slate-900]="activeTab==='bids'" [class.text-white]="activeTab==='bids'"
+        [class.text-slate-500]="activeTab!=='bids'" [class.hover:bg-slate-50]="activeTab!=='bids'">
+        Bids
+      </button>
+      <button (click)="setTab('bookings')"
+        class="flex-1 py-2.5 text-xs font-bold uppercase rounded-lg transition-all tracking-wide"
+        [class.bg-slate-900]="activeTab==='bookings'" [class.text-white]="activeTab==='bookings'"
+        [class.text-slate-500]="activeTab!=='bookings'" [class.hover:bg-slate-50]="activeTab!=='bookings'">
+        Bookings
+      </button>
+      <button (click)="setTab('assigned')"
+        class="flex-1 py-2.5 text-xs font-bold uppercase rounded-lg transition-all tracking-wide"
+        [class.bg-slate-900]="activeTab==='assigned'" [class.text-white]="activeTab==='assigned'"
+        [class.text-slate-500]="activeTab!=='assigned'" [class.hover:bg-slate-50]="activeTab!=='assigned'">
+        Assigned
+      </button>
+    </div>
+
+
+    <!-- BIDS TAB CONTENT -->
+    @if (activeTab === 'bids') {
+    <div class="space-y-4">
+      @if (loadingBids) {
+      <div class="bg-white rounded-3xl p-8 text-center shadow-lg">
+        <div class="w-8 h-8 border-4 border-[#314054] border-t-transparent rounded-full animate-spin mx-auto mb-4">
+        </div>
+        <p class="text-slate-500 font-semibold">Loading bids...</p>
+      </div>
+      } @else if (bookingBids.length === 0) {
+      <div class="bg-white rounded-3xl p-12 text-center shadow-lg border-2 border-slate-100">
+        <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+          </path>
+        </svg>
+        <p class="text-slate-400 font-semibold text-lg">No bids yet</p>
+      </div>
+      } @else {
+      @for (item of bookingBids; track item.booking.id) {
+      <!-- Main Bid Card -->
+      <div
+        class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 hover:border-[#314054]">
+        <button (click)="toggleBooking(item.booking.id)" class="w-full p-5 rounded-2xl text-left
+         bg-white hover:bg-slate-50
+         transition flex flex-col gap-3 cursor-pointer">
+
+          <!-- TOP ROW : PICKUP ← ARROW → DROP -->
+          <div class="flex items-center justify-between gap-4">
+
+            <!-- LEFT : PICKUP -->
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <p class="text-base font-bold text-slate-800 truncate">
+                {{ item.booking.pickup }}
+              </p>
+            </div>
+
+            <!-- CENTER : ARROW -->
+            <div class="flex-shrink-0 text-slate-500 text-lg font-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19.99" height="18">
+                <path d="M10.029 5H0v7.967h10.029V18l9.961-9.048L10.029 0v5z" />
+              </svg>
+            </div>
+
+            <!-- RIGHT : DROP -->
+            <div class="flex items-center gap-3 min-w-0 justify-end">
+              <p class="text-base font-bold text-slate-800 truncate text-right">
+                {{ item.booking.drop }}
+              </p>
+
+              <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="flex justify-between">
+            <!-- SECOND ROW : BID + DATE + TIME (NO BLANK SPACE) -->
+            <div class="flex items-center gap-4 text-sm text-slate-600 flex-wrap relative top-1">
+
+              <!-- Bid -->
+              <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+                {{ item.bids.length }} Bid{{ item.bids.length !== 1 ? 's' : '' }}
+              </span>
+
+              <!-- Date -->
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2" />
+                </svg>
+                {{ item.booking.date }}
+              </div>
+
+              <!-- Time -->
+              <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0" />
+                </svg>
+                {{ item.booking.time }}
+              </div>
+
+            </div>
+
+            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </button>
+
+        <!-- Collapsible Bids Section -->
+        @if (isBookingExpanded(item.booking.id)) {
+        <div class="border-t border-slate-100 p-3 space-y-2 bg-slate-50">
+          @for (bid of item.bids; track bid.id) {
+          <!-- Improved bid card layout with better visual hierarchy and organization -->
+          <div class="border border-slate-200 rounded-xl p-3 bg-white hover:bg-blue-50 transition-all">
+            <!-- Driver Info Row -->
+            <div class="flex items-start justify-between mb-2.5">
+              <div class="flex items-center gap-2 flex-1">
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-br from-[#314054] to-[#D4894E] flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-slate-800"> {{ driverMap.get(bid.driverId)?.name || bid.driverId }}
+                  </p>
+                  <p class="text-xs font-bold text-slate-800 truncate">{{ bid.driverId }}</p>
+
+                  <!-- <div class="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    </svg>
+                    <span class="truncate">{{ bid.driverCity }}</span>
+                  </div> -->
+                </div>
+              </div>
+
+              <!-- Accept Button -->
+              @if (bid.status === 'pending') {
+              <button (click)="acceptBid(bid, item.booking)" [disabled]="acceptingBidId === bid.id"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition whitespace-nowrap ml-2 flex-shrink-0 active:scale-95">
+                {{ acceptingBidId === bid.id ? '...' : '✓ Accept' }}
+              </button>
+              } @else if (bid.status === 'accepted') {
+              <span
+                class="px-3 py-1.5 rounded-lg text-xs font-bold bg-green-100 text-green-700 flex items-center gap-1 whitespace-nowrap ml-2 flex-shrink-0">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                Accepted
+              </span>
+              }
+            </div>
+
+            <!-- Financial Summary Row -->
+            <div class="grid grid-cols-3 gap-2 pt-2.5 border-t border-slate-100">
+              <div class="text-center">
+                <p class="text-xs text-slate-500 mb-0.5">Commission</p>
+                <p class="text-xs font-bold text-red-600">₹{{ bid.finalCommission || 0 }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-xs text-slate-500 mb-0.5">Driver Income</p>
+                <p class="text-xs font-bold text-green-600">₹{{ bid.driverBidIncome || 0 }}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-xs text-slate-500 mb-0.5">Total</p>
+                <p class="text-xs font-bold text-blue-600">₹{{ bid.totalBookingAmount || 0 }}</p>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+      </div>
+      }
+      }
+    </div>
+    }
+
+    <!-- BOOKINGS TAB -->
+    @if (activeTab === 'bookings') {
+    @if (loadingBookings) {
+    <div class="bg-white rounded-2xl p-6 text-center">
+      <div class="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-slate-500 text-sm font-semibold">Loading bookings...</p>
+    </div>
+    } @else {
+    @if (adminBookings.length === 0) {
+    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+      <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9 12l2 2 4-4M7 12a5 5 0 1110 0A5 5 0 017 12z"></path>
+      </svg>
+      <p class="text-slate-400 text-sm font-semibold">No bookings created yet</p>
+    </div>
+    } @else {
+    @for (booking of adminBookings; track booking.id) {
+    <!-- Premium booking card with collapsible details -->
+    <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-slate-200">
+      <button (click)="toggleBooking(booking.id)" class="w-full p-5 rounded-2xl text-left
+         bg-white hover:bg-slate-50
+         transition flex flex-col gap-3 cursor-pointer">
+
+        <!-- TOP ROW : PICKUP ← ARROW → DROP -->
+        <div class="flex items-center justify-between gap-4">
+
+          <!-- LEFT : PICKUP -->
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+
+            <p class="text-base font-bold text-slate-800 truncate">
+              {{ booking.pickup }}
+            </p>
+          </div>
+
+          <!-- CENTER : ARROW -->
+          <div class="flex-shrink-0 text-slate-500 text-lg font-bold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19.99" height="18">
+              <path d="M10.029 5H0v7.967h10.029V18l9.961-9.048L10.029 0v5z" />
+            </svg>
+          </div>
+
+          <!-- RIGHT : DROP -->
+          <div class="flex items-center gap-3 min-w-0 justify-end">
+            <p class="text-base font-bold text-slate-800 truncate text-right">
+              {{ booking.drop }}
+            </p>
+
+            <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="flex justify-between">
+          <!-- SECOND ROW : BID + DATE + TIME (NO BLANK SPACE) -->
+          <div class="flex items-center gap-2 text-sm text-slate-600 flex-wrap relative top-1">
+
+            <!-- CabType -->
+            <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+              {{ booking.cabType || 'N/A' }}
+            </span>
+
+            <!-- RideType -->
+            <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+              {{ booking.rideType }}
+            </span>
+
+            <!-- Date -->
+            <div class="px-3 py-[0.30rem] rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex gap-1">
+              <p class="text-[10px] text-slate-500 font-semibold uppercase">STATUS : <span class="text-[10px] font-bold"
+                  [ngClass]="{
+                        ' text-green-700': booking.status === 'assigned',
+                        ' text-blue-700': booking.status === 'active'
+                      }">
+                  {{ booking.status }}
+                </span></p>
+            </div>
+          </div>
+
+          <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </button>
+
+      <!-- CHANGE: Compact expandable content - keeps assigned drivers section and minimizes height -->
+      @if (isBookingExpanded(booking.id)) {
+      <div class="bg-slate-50 border-t border-slate-200 p-3 space-y-2 animate-slideDown">
+
+        <!-- Booking details - compact grid -->
+        <div class="flex justify-between bg-white rounded-lg p-2 border border-slate-100">
+          <div class="">
+            <p class="text-[10px] text-slate-500 font-semibold uppercase">BOOKING CODE : <span
+                class="font-bold text-slate-700">{{ booking.bookingCode || 'N/A' }}</span></p>
+            <!-- <p class="text-xs font-bold text-[#314054]"></p> -->
+          </div>
+          <div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="flex flex-col gap-1 bg-white rounded-lg p-2 border border-slate-100">
+
+          <div class="flex text-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-[0.95rem] w-[0.95rem] mr-1" viewBox="0 0 64 64">
+              <g data-name="user location">
+                <path
+                  d="M33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm0 0h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm2.37-11.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm2.37-11.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zm0 0A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm0 0h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zM32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.16-3.32A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28zm0-23a21 21 0 0 0-21 21c0 17 21 33 21 33s21-16 21-33A21 21 0 0 0 32 5zm10.63 33A16 16 0 1 1 48 26a16 16 0 0 1-5.37 12zm-9.57-8h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zM32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.16-3.32A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28zm3.42-9.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm0 0h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm2.37-11.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm2.37-11.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zm2.37-11.59A4.35 4.35 0 0 0 32.2 17h-.33a4.35 4.35 0 0 0-3.23 1.41 4.3 4.3 0 0 0-1.16 3.32l.17 2.2A4.38 4.38 0 0 0 32 28a4.43 4.43 0 0 0 4.41-4.07l.17-2.2a4.3 4.3 0 0 0-1.15-3.32zM33.06 30h-2.12a8 8 0 0 0-7.86 6.78l.11.08.5.39.53.37c.28.19.57.37.86.53l.53.29.35.17.48.22a12.73 12.73 0 0 0 2.4.79 6.19 6.19 0 0 0 .62.13c.16 0 .32.06.49.09a14.08 14.08 0 0 0 4.1 0c.17 0 .33-.05.49-.09a6.19 6.19 0 0 0 .62-.13 12.73 12.73 0 0 0 2.4-.79l.48-.22.35-.17.53-.29c.29-.16.58-.34.86-.53l.53-.37.5-.39.11-.08A8 8 0 0 0 33.06 30zM40.81 36.87l.11-.08zm-17.73-.09.11.08z" />
+              </g>
+            </svg>
+
+            <p class="font-bold text-slate-500">
+              Address : <span class="font-bold text-slate-700">{{
+                booking.address }}</span>
+            </p>
+          </div>
+
+          <div class="flex text-xs">
+            <svg class="w-[0.85rem] h-[0.85rem] mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2" />
+            </svg>
+            <p class="font-bold text-slate-500">Date : <span class="font-bold text-slate-700">{{
+                booking.date }}</span>
+            </p>
+          </div>
+
+          <div class="flex text-xs">
+            <svg class="w-[0.85rem] h-[0.85rem] mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0" />
+            </svg>
+            <p class="font-bold text-slate-500">Time : <span class="font-bold text-slate-700">{{
+                booking.time }}</span>
+            </p>
+          </div>
+
+        </div>
+
+
+        <!-- Pricing - compact -->
+        <div class="bg-white rounded-lg p-2 border border-slate-100 space-y-0.5">
+          <p class="text-[10px] text-slate-500 font-semibold uppercase mb-1">Pricing</p>
+          <div class="flex justify-between text-xs">
+            <span>Driver Income:</span>
+            <span class="font-bold text-green-600">₹{{ booking.baseDriverIncome || 0 }}</span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span>Commission:</span>
+            <span class="font-bold text-red-600">₹{{ booking.baseCommission || 0 }}</span>
+          </div>
+          <div class="h-[0.5px] bg-gray-200"></div>
+          <div class="flex justify-between text-xs mt-1">
+            <span>Total Amount:</span>
+            <span class="font-bold text-blue-600">₹{{ booking.baseCommission + booking.baseDriverIncome }}</span>
+          </div>
+        </div>
+
+        <!-- CHANGE: Assigned driver section - kept but compact -->
+        @if (booking.selectedDriverId) {
+        <div class="bg-white rounded-lg p-2 border border-slate-100">
+          <p class="text-[10px] text-slate-500 font-semibold uppercase mb-1.5">Assigned Driver</p>
+          <div class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-full bg-gradient-to-br from-[#314054] to-[#D4894E] flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-slate-800"> {{ driverMap.get(booking.selectedDriverId)?.name ||
+                booking.selectedDriverId }}</p>
+              <p class="text-[10px] text-slate-600">{{ driverMap.get(booking.selectedDriverId)?.phone }}</p>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- CHANGE: Action buttons with SVG icons for edit and delete -->
+        <div class="flex gap-2 pt-1">
+          <button (click)="editBooking(booking)"
+            class="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-[#314054] hover:bg-[#1f2a3a] transition active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+              </path>
+            </svg>
+            Edit
+          </button>
+          <button (click)="deleteBooking(booking)"
+            class="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+            Delete
+          </button>
+        </div>
+
+      </div>
+      }
+
+
+    </div>
+    }
+    }
+    }
+    }
+
+
+    <!-- ASSIGNED TAB -->
+    @if (activeTab === 'assigned') {
+    @if (loadingAssigned) {
+    <div class="bg-white rounded-2xl p-6 text-center">
+      <div class="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <p class="text-slate-500 text-sm font-semibold">Loading assigned bookings...</p>
+    </div>
+    } @else {
+    @if (assignedBookings.length === 0) {
+    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+      <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <p class="text-slate-400 text-sm font-semibold">No assigned bookings</p>
+    </div>
+    } @else {
+    @for (item of assignedBookings; track item.booking.id) {
+    <!-- Enhanced assigned booking card with professional design -->
+    <div class="bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all border border-slate-200">
+      <!-- Route Header with Icons -->
+      <div class="mb-4 pb-4 border-b border-slate-100">
+        <!-- TOP ROW : PICKUP ← ARROW → DROP -->
+        <div class="flex items-center justify-between gap-4">
+
+          <!-- LEFT : PICKUP -->
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+
+            <p class="text-base font-bold text-slate-800 truncate">
+              {{ item.booking.pickup }}
+            </p>
+          </div>
+
+          <!-- CENTER : ARROW -->
+          <div class="flex-shrink-0 text-slate-500 text-lg font-bold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19.99" height="18">
+              <path d="M10.029 5H0v7.967h10.029V18l9.961-9.048L10.029 0v5z" />
+            </svg>
+          </div>
+
+          <!-- RIGHT : DROP -->
+          <div class="flex items-center gap-3 min-w-0 justify-end">
+            <p class="text-base font-bold text-slate-800 truncate text-right">
+              {{ item.booking.drop }}
+            </p>
+
+            <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Date -->
+      <div class="px-3 flex justify-between py-[0.30rem] rounded-md bg-gray-100 text-indigo-700 text-sm font-bold gap-1 mb-2">
+        <p class="text-slate-500 font-semibold uppercase">BOOKING CODE : <span class="font-bold text-green-700">
+            {{ item.booking.bookingCode }}
+          </span></p>
+
+          <button class="text-red-600">
+            <svg class="w-[1.20rem] h-[1.30rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+          </button>
+      </div>
+      <!-- Driver & Financial Info Grid -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <!-- Driver Card -->
+        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-3 border border-blue-200">
+          <div class="flex items-center gap-1.5 mb-2">
+            <svg class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+            <p class="text-xs font-bold text-slate-700">Driver</p>
+          </div>
+          <p class="text-sm font-bold text-slate-900">{{ item.driver.name }}</p>
+          <p class="text-xs text-slate-600 mt-1">{{ item.driver.phone }}</p>
+          <p class="text-xs text-slate-500 mt-1 truncate">{{ item.driver.vehicleNumber }}</p>
+        </div>
+
+        <!-- Financial Card -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 border border-green-200 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-slate-700 font-semibold">Income</span>
+            <span class="text-sm font-bold text-green-600">₹{{ item.bid.driverBidIncome }}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-slate-700 font-semibold">Commission</span>
+            <span class="text-sm font-bold text-red-600">₹{{ item.bid.finalCommission }}</span>
+          </div>
+          <div class="flex justify-between items-center pt-2 border-t border-green-200">
+            <span class="text-xs text-slate-700 font-bold">Total</span>
+            <span class="text-sm font-bold text-blue-600">₹{{ item.bid.totalBookingAmount }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PDF Action Button -->
+      @if (!item.booking.customerPdfUrl) {
+      <button (click)="uploadCustomerPdf(item.booking)"
+        class="w-full py-2.5 rounded-xl font-bold text-xs uppercase bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+        </svg>
+        Upload PDF
+      </button>
+      } @else {
+      <button (click)="removeCustomerPdf(item.booking)"
+        class="w-full py-2.5 rounded-xl font-bold text-xs uppercase bg-red-600 text-white hover:bg-red-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+          </path>
+        </svg>
+        Remove PDF
+      </button>
+      }
+    </div>
+    }
+    }
+    }
+    }
+  </div>
+</div>
+
+}

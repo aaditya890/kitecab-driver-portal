@@ -10,7 +10,7 @@ import { APP_ROUTES } from '../../../routes.constant';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, NgClass],
+  imports: [ReactiveFormsModule, FormsModule, NgClass],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
 })
@@ -183,5 +183,9 @@ export class SignupComponent {
       this.resendTimer--
       if (this.resendTimer <= 0) clearInterval(interval)
     }, 1000)
+  }
+
+  goToDriverLogin() {
+    this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
   }
 }

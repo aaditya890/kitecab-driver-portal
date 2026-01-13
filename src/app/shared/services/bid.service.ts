@@ -112,4 +112,43 @@ export class BidService {
     const ref = doc(this.fs, 'bids', bidId);
     return deleteDoc(ref);
   }
+
+
+// ✔ get bids by booking
+async getBidsByBookingId(bookingId: string) {
+  const ref = collection(this.fs, 'bids');
+  const q = query(ref, where('bookingId', '==', bookingId));
+  const snap = await getDocs(q);
+
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...(d.data() as Bid),
+  }));
 }
+
+// ✔ mark one bid accepted
+async markBidAccepted(bidId: string) {
+  const ref = doc(this.fs, 'bids', bidId);
+  await updateDoc(ref, { status: 'accepted' });
+}
+
+// ✔ close all other bids of same booking
+async closeOtherBidsOfBooking(bookingId: string, acceptedBidId: string) {
+  const ref = collection(this.fs, 'bids');
+  const q = query(
+    ref,
+    where('bookingId', '==', bookingId),
+    where('status', '==', 'pending')
+  );
+
+  const snap = await getDocs(q);
+
+  for (const d of snap.docs) {
+    if (d.id !== acceptedBidId) {
+      await updateDoc(doc(this.fs, 'bids', d.id), {
+        status: 'closed',
+      });
+    }
+  }
+
+}}

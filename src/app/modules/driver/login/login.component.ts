@@ -16,7 +16,7 @@ declare global {
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, NgClass],
+  imports: [ReactiveFormsModule, FormsModule, NgClass],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })
@@ -124,5 +124,9 @@ export class LoginComponent implements OnInit {
       this.resendTimer--
       if (this.resendTimer <= 0) clearInterval(interval)
     }, 1000)
+  }
+
+  goToDriverSignup(){
+    this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.SIGNUP]);
   }
 }

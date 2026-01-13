@@ -181,8 +181,10 @@ async deleteBid(bidId: string) {
 }
 
 openCustomerPdf(url: string) {
-  window.open(url, '_blank');
+  const previewUrl = url.replace(
+    '/raw/upload/',
+    '/raw/upload/fl_inline/'
+  );
+  window.open(previewUrl, '_blank');
 }
-
-
 }

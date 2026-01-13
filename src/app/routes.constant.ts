@@ -22,6 +22,7 @@ export const APP_ROUTES = {
     DASHBOARD: 'dashboard',
     BOOKING_LIST: 'booking-list',
     DRIVERS: 'drivers',
+    DRIVER_DETAILS: 'driver/:id',
     BOOKING_DETAILS: 'booking/:id',
 
   }

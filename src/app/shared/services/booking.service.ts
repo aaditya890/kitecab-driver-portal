@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   Firestore,
   getDoc,
@@ -51,6 +52,20 @@ export class BookingService {
       id: d.id,
       ...(d.data() as Booking),
     }));
+  }
+
+  async getAllBookings(): Promise<Booking[]> {
+    const ref = collection(this.fs, 'bookings');
+    const snap = await getDocs(ref);  
+    return snap.docs.map(d => ({
+      id: d.id,
+      ...(d.data() as Booking),
+    }));
+  }
+
+  deleteBooking(bookingId: string) {
+    const ref = doc(this.fs, 'bookings', bookingId);
+    return deleteDoc(ref);
   }
 
   // ✅ SINGLE BOOKING
@@ -128,5 +143,18 @@ async assignDriverWithPdf(
     customerPdfUrl: customerPdfUrl,
   });
 }
+
+// ✔ ADMIN: get assigned bookings
+async getAssignedBookings(): Promise<Booking[]> {
+  const ref = collection(this.fs, 'bookings');
+  const q = query(ref, where('status', '==', 'assigned'));
+  const snap = await getDocs(q);
+
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...(d.data() as Booking),
+  }));
+}
+
 
 }

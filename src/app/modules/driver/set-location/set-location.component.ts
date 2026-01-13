@@ -100,4 +100,6 @@ export class SetLocationComponent {
   backToDashboard() {
     this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.DASHBOARD]);
   }
+
+  
 }
