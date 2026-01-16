@@ -9,6 +9,7 @@ import { DriverService } from '../../../shared/services/driver.service';
 import { BidService } from '../../../shared/services/bid.service';
 import { Bid } from '../../../shared/interfaces/bid.interface';
 import { NgClass } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ export class DashboardComponent {
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
   private bidService = inject(BidService);
+  private snackBar = inject(MatSnackBar);
   myBidsWithBooking: Array<{
     bid: Bid;
     booking: Booking | null;
@@ -114,15 +116,44 @@ async refreshBookings() {
 }
 
 
+async toggleOnline() {
+  // toggle status
+  this.driver.onlineStatus = !this.driver.onlineStatus;
 
-  async toggleOnline() {
-    this.driver.onlineStatus = !this.driver.onlineStatus;
-    localStorage.setItem('driver', JSON.stringify(this.driver));
+  // save locally
+  localStorage.setItem('driver', JSON.stringify(this.driver));
+
+  try {
     await this.driverService.updateOnlineStatus(
       this.driver.phone,
       this.driver.onlineStatus
     );
+
+    // ✅ SNACKBAR MESSAGE
+    this.snackBar.open(
+      this.driver.onlineStatus
+        ? 'You are now online.'
+        : 'You are now offline.',
+      'OK',
+      {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+      }
+    );
+    
+  } catch (error) {
+    console.error('Status update failed', error);
+
+    // ❌ ERROR SNACKBAR
+    this.snackBar.open('Failed to update status. Try again.', 'Retry', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
   }
+}
+
 
   navigateToSetLocation() {
     this.router.navigate([

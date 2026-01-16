@@ -11,7 +11,7 @@ import { Driver } from '../../../shared/interfaces/driver.interface';
 import { DriverService } from '../../../shared/services/driver.service';
 import { CloudinaryService } from '../../../shared/services/cloudinary.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialog,MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgClass } from '@angular/common';
 
 
@@ -32,12 +32,12 @@ type AdminTab = 'bids' | 'assigned' | 'bookings';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,MatDialogModule,NgClass],
+  imports: [ReactiveFormsModule, FormsModule, MatDialogModule, NgClass],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent  implements OnInit  , AfterViewInit{
- private router = inject(Router)
+export class DashboardComponent implements OnInit, AfterViewInit {
+  private router = inject(Router)
   private adminService = inject(AdminService)
   private driverService = inject(DriverService)
   private cloudinary = inject(CloudinaryService)
@@ -69,12 +69,12 @@ export class DashboardComponent  implements OnInit  , AfterViewInit{
     }
     this.loadingDashboard = false
     this.loadBidsTab()
-  
+
   }
 
   ngAfterViewInit(): void {
     // Additional initialization if needed after the view is initialized
-      this.loadAssignedBookings()
+    this.loadAssignedBookings()
     this.loadAdminBookings()
   }
 
@@ -183,7 +183,7 @@ export class DashboardComponent  implements OnInit  , AfterViewInit{
 
       const pdfUrl = await this.cloudinary.uploadFile(file)
       await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, pdfUrl)
-      this.showSnack("✓ PDF uploaded successfully", "success")
+      this.snackBar.open("✓ PDF uploaded", "success")
       await this.loadAssignedBookings()
     }
 
@@ -192,7 +192,7 @@ export class DashboardComponent  implements OnInit  , AfterViewInit{
 
   async removeCustomerPdf(booking: Booking) {
     await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, "")
-    this.showSnack("✓ PDF removed", "success")
+    this.snackBar.open("✓ PDF removed", "success")
     await this.loadAssignedBookings()
   }
 

@@ -12,7 +12,7 @@
 
     <!-- HEADER: Premium Gradient with Decorative Effects -->
     <div
-      class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+      class="bg-gradient-to-r from-blue-600 to-[#4d95c8] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
       <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/15 rounded-full blur-3xl"></div>
       <div class="absolute -left-6 -bottom-6 w-28 h-28 bg-purple-400/20 rounded-full blur-2xl"></div>
 
@@ -24,11 +24,11 @@
               <path
                 d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
             </svg>
-            <span class="text-sm font-bold text-indigo-100">{{ adminName }}</span>
+            <span class="text-sm font-semibold text-indigo-100 uppercase">{{ adminName }}</span>
           </div>
         </div>
         <button (click)="logout()" title="Logout"
-          class="p-3 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl transition-all border border-white/30">
+          class="p-4 bg-red-600 hover:bg-red-700 active:scale-95 rounded-xl transition-all border border-white/30">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -86,13 +86,13 @@
     @if (activeTab === 'bids') {
     <div class="space-y-4">
       @if (loadingBids) {
-      <div class="bg-white rounded-3xl p-8 text-center shadow-lg">
+      <div class="bg-white rounded-2xl p-8 text-center shadow-lg">
         <div class="w-8 h-8 border-4 border-[#314054] border-t-transparent rounded-full animate-spin mx-auto mb-4">
         </div>
         <p class="text-slate-500 font-semibold">Loading bids...</p>
       </div>
       } @else if (bookingBids.length === 0) {
-      <div class="bg-white rounded-3xl p-12 text-center shadow-lg border-2 border-slate-100">
+      <div class="bg-white rounded-2xl p-12 text-center shadow-lg border-2 border-slate-100">
         <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
@@ -104,8 +104,8 @@
       @for (item of bookingBids; track item.booking.id) {
       <!-- Main Bid Card -->
       <div
-        class="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 hover:border-[#314054]">
-        <button (click)="toggleBooking(item.booking.id)" class="w-full p-5 rounded-2xl text-left
+        class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-slate-100 hover:border-[#314054]">
+        <button (click)="toggleBooking(item.booking.id)" class="w-full px-5 py-4 rounded-2xl text-left
          bg-white hover:bg-slate-50
          transition flex flex-col gap-3 cursor-pointer">
 
@@ -151,10 +151,17 @@
 
           </div>
 
+          <!-- Booking Id -->
+          <div
+            class="px-3 flex justify-between py-[0.30rem] rounded-md bg-gray-100 text-indigo-700 text-xs font-bold gap-1 mt-1">
+            <p class="text-slate-500 font-semibold uppercase">BOOKING CODE : <span class="font-bold text-green-700">
+                {{ item.booking.bookingCode }}
+              </span></p>
 
+          </div>
           <div class="flex justify-between">
             <!-- SECOND ROW : BID + DATE + TIME (NO BLANK SPACE) -->
-            <div class="flex items-center gap-4 text-sm text-slate-600 flex-wrap relative top-1">
+            <div class="flex items-center gap-4 text-sm text-slate-600 flex-wrap">
 
               <!-- Bid -->
               <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
@@ -181,13 +188,22 @@
 
             </div>
 
-            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Added click handler for delete button -->
+          <div class="flex items-center">
+            <!-- Added toggle button next to delete button -->
+            <button 
+              class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 hover:bg-indigo-200 transition"
+              [class.rotate-180]="isBookingExpanded(item.booking.id)">
+              <svg class="w-5 h-5 text-indigo-600 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
-            </div>
+            </button>
+          </div>
           </div>
         </button>
+
+
 
         <!-- Collapsible Bids Section -->
         @if (isBookingExpanded(item.booking.id)) {
@@ -196,7 +212,7 @@
           <!-- Improved bid card layout with better visual hierarchy and organization -->
           <div class="border border-slate-200 rounded-xl p-3 bg-white hover:bg-blue-50 transition-all">
             <!-- Driver Info Row -->
-            <div class="flex items-start justify-between mb-2.5">
+            <div class="flex items-start justify-between mb-2.  5">
               <div class="flex items-center gap-2 flex-1">
                 <div
                   class="w-8 h-8 rounded-full bg-gradient-to-br from-[#314054] to-[#D4894E] flex items-center justify-center flex-shrink-0">
@@ -285,7 +301,7 @@
     @for (booking of adminBookings; track booking.id) {
     <!-- Premium booking card with collapsible details -->
     <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-slate-200">
-      <button (click)="toggleBooking(booking.id)" class="w-full p-5 rounded-2xl text-left
+      <button (click)="toggleBooking(booking.id)" class="w-full px-5 py-4 rounded-2xl text-left
          bg-white hover:bg-slate-50
          transition flex flex-col gap-3 cursor-pointer">
 
@@ -329,12 +345,20 @@
             </div>
           </div>
 
-        </div>
 
+
+        </div>
+        <!-- Booking Id -->
+        <div
+          class="px-3 flex justify-between py-[0.30rem] rounded-md bg-gray-100 text-indigo-700 text-xs font-bold gap-1">
+          <p class="text-slate-500 font-semibold uppercase">BOOKING CODE : <span class="font-bold text-green-700">
+              {{ booking.bookingCode }}
+            </span></p>
+        </div>
 
         <div class="flex justify-between">
           <!-- SECOND ROW : BID + DATE + TIME (NO BLANK SPACE) -->
-          <div class="flex items-center gap-2 text-sm text-slate-600 flex-wrap relative top-1">
+          <div class="flex items-center gap-2 text-sm text-slate-600 flex-wrap">
 
             <!-- CabType -->
             <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
@@ -358,29 +382,28 @@
             </div>
           </div>
 
-          <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+           <!-- Added click handler for delete button -->
+          <div class="flex items-center">
+            <!-- Added toggle button next to delete button -->
+            <button 
+              class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 hover:bg-indigo-200 transition"
+              [class.rotate-180]="isBookingExpanded(booking.id)">
+              <svg class="w-5 h-5 text-indigo-600 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
           </div>
         </div>
+
+
+
       </button>
 
       <!-- CHANGE: Compact expandable content - keeps assigned drivers section and minimizes height -->
       @if (isBookingExpanded(booking.id)) {
       <div class="bg-slate-50 border-t border-slate-200 p-3 space-y-2 animate-slideDown">
-
-        <!-- Booking details - compact grid -->
-        <div class="flex justify-between bg-white rounded-lg p-2 border border-slate-100">
-          <div class="">
-            <p class="text-[10px] text-slate-500 font-semibold uppercase">BOOKING CODE : <span
-                class="font-bold text-slate-700">{{ booking.bookingCode || 'N/A' }}</span></p>
-            <!-- <p class="text-xs font-bold text-[#314054]"></p> -->
-          </div>
-          <div>
-          </div>
-        </div>
-
         <!-- Address -->
         <div class="flex flex-col gap-1 bg-white rounded-lg p-2 border border-slate-100">
 
@@ -492,7 +515,6 @@
     }
     }
 
-
     <!-- ASSIGNED TAB -->
     @if (activeTab === 'assigned') {
     @if (loadingAssigned) {
@@ -512,126 +534,160 @@
     } @else {
     @for (item of assignedBookings; track item.booking.id) {
     <!-- Enhanced assigned booking card with professional design -->
-    <div class="bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all border border-slate-200">
-      <!-- Route Header with Icons -->
-      <div class="mb-4 pb-4 border-b border-slate-100">
-        <!-- TOP ROW : PICKUP ← ARROW → DROP -->
-        <div class="flex items-center justify-between gap-4">
+    <!-- Added clickable toggle and expanded state functionality -->
+    <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-slate-200">
+      <!-- Route Header with Icons - Clickable to expand/collapse -->
+      <button (click)="toggleBooking(item.booking.id)"
+        class="w-full px-4 pt-4 pb-2 text-left cursor-pointer hover:bg-slate-50 transition">
+        <div class="mb-4 pb-4 border-b border-slate-100">
+          <!-- TOP ROW : PICKUP ← ARROW → DROP -->
+          <div class="flex items-center justify-between gap-4">
 
-          <!-- LEFT : PICKUP -->
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-              <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                  clip-rule="evenodd"></path>
+            <!-- LEFT : PICKUP -->
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-6 h-6 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <p class="text-base font-bold text-slate-800 truncate">
+                {{ item.booking.pickup }}
+              </p>
+            </div>
+
+            <!-- CENTER : ARROW -->
+            <div class="flex-shrink-0 text-slate-500 text-lg font-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19.99" height="18">
+                <path d="M10.029 5H0v7.967h10.029V18l9.961-9.048L10.029 0v5z" />
               </svg>
             </div>
 
-            <p class="text-base font-bold text-slate-800 truncate">
-              {{ item.booking.pickup }}
-            </p>
-          </div>
+            <!-- RIGHT : DROP -->
+            <div class="flex items-center gap-3 min-w-0 justify-end">
+              <p class="text-base font-bold text-slate-800 truncate text-right">
+                {{ item.booking.drop }}
+              </p>
 
-          <!-- CENTER : ARROW -->
-          <div class="flex-shrink-0 text-slate-500 text-lg font-bold">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19.99" height="18">
-              <path d="M10.029 5H0v7.967h10.029V18l9.961-9.048L10.029 0v5z" />
-            </svg>
-          </div>
+              <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
 
-          <!-- RIGHT : DROP -->
-          <div class="flex items-center gap-3 min-w-0 justify-end">
-            <p class="text-base font-bold text-slate-800 truncate text-right">
-              {{ item.booking.drop }}
-            </p>
-
-            <div class="w-6 h-6 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
-              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                  clip-rule="evenodd"></path>
-              </svg>
             </div>
+
           </div>
 
         </div>
 
-      </div>
+        <!-- Booking Id -->
+        <div
+          class="px-2 flex justify-between py-[0.30rem] rounded-md bg-gray-100 text-indigo-700 text-xs font-bold gap-1 mb-2">
+          <p class="text-slate-500 relative top-1 font-semibold uppercase">BOOKING CODE : <span
+              class="font-bold text-green-700">
+              {{ item.booking.bookingCode }}
+            </span></p>
 
-      <!-- Date -->
-      <div class="px-3 flex justify-between py-[0.30rem] rounded-md bg-gray-100 text-indigo-700 text-sm font-bold gap-1 mb-2">
-        <p class="text-slate-500 font-semibold uppercase">BOOKING CODE : <span class="font-bold text-green-700">
-            {{ item.booking.bookingCode }}
-          </span></p>
+          <!-- Added click handler for delete button -->
+          <div class="flex items-center">
+            <!-- Added toggle button next to delete button -->
+            <button (click)="toggleBooking(item.booking.id); $event.stopPropagation()"
+              class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0 hover:bg-indigo-200 transition"
+              [class.rotate-180]="isBookingExpanded(item.booking.id)">
+              <svg class="w-5 h-5 text-indigo-600 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
 
-          <button class="text-red-600">
+          </div>
+        </div>
+      </button>
+
+      <!-- Expandable Details Section -->
+      @if (isBookingExpanded(item.booking.id)) {
+      <div class="bg-slate-50 border-t border-slate-200 p-4 space-y-3">
+        <!-- Driver & Financial Info Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <!-- Driver Card -->
+          <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-3 border border-blue-200">
+            <div class="flex items-center gap-1.5 mb-2">
+              <svg class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+              <p class="text-xs font-bold text-slate-700">Driver</p>
+            </div>
+            <p class="text-sm font-bold text-slate-900">{{ item.driver.name }}</p>
+            <p class="text-xs text-slate-600 mt-1">{{ item.driver.phone }}</p>
+            <p class="text-xs text-slate-500 mt-1 truncate">{{ item.driver.vehicleNumber }}</p>
+          </div>
+
+          <!-- Financial Card -->
+          <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 border border-green-200 space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-slate-700 font-semibold">Income</span>
+              <span class="text-sm font-bold text-green-600">₹{{ item.bid.driverBidIncome }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-slate-700 font-semibold">Commission</span>
+              <span class="text-sm font-bold text-red-600">₹{{ item.bid.finalCommission }}</span>
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-green-200">
+              <span class="text-xs text-slate-700 font-bold">Total</span>
+              <span class="text-sm font-bold text-blue-600">₹{{ item.bid.totalBookingAmount }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+
+          <!-- PDF Action Button -->
+          @if (!item.booking.customerPdfUrl) {
+          <button (click)="uploadCustomerPdf(item.booking)"
+            class="flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+            </svg>
+            Upload PDF
+          </button>
+          } @else {
+          <button (click)="removeCustomerPdf(item.booking)"
+            class="flex-1 py-2 rounded-lg text-xs font-bold bg-red-600 text-white hover:bg-red-700transition active:scale-95 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+            Remove PDF
+          </button>
+          }
+
+
+          <button (click)="deleteBooking(item.booking); $event.stopPropagation()"
+            class="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition active:scale-95 flex items-center justify-center gap-1.5">
             <svg class="w-[1.20rem] h-[1.30rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
               </path>
             </svg>
+            Delete
           </button>
-      </div>
-      <!-- Driver & Financial Info Grid -->
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <!-- Driver Card -->
-        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-3 border border-blue-200">
-          <div class="flex items-center gap-1.5 mb-2">
-            <svg class="w-3.5 h-3.5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-            </svg>
-            <p class="text-xs font-bold text-slate-700">Driver</p>
-          </div>
-          <p class="text-sm font-bold text-slate-900">{{ item.driver.name }}</p>
-          <p class="text-xs text-slate-600 mt-1">{{ item.driver.phone }}</p>
-          <p class="text-xs text-slate-500 mt-1 truncate">{{ item.driver.vehicleNumber }}</p>
         </div>
 
-        <!-- Financial Card -->
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 border border-green-200 space-y-2">
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-slate-700 font-semibold">Income</span>
-            <span class="text-sm font-bold text-green-600">₹{{ item.bid.driverBidIncome }}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-slate-700 font-semibold">Commission</span>
-            <span class="text-sm font-bold text-red-600">₹{{ item.bid.finalCommission }}</span>
-          </div>
-          <div class="flex justify-between items-center pt-2 border-t border-green-200">
-            <span class="text-xs text-slate-700 font-bold">Total</span>
-            <span class="text-sm font-bold text-blue-600">₹{{ item.bid.totalBookingAmount }}</span>
-          </div>
-        </div>
       </div>
-
-      <!-- PDF Action Button -->
-      @if (!item.booking.customerPdfUrl) {
-      <button (click)="uploadCustomerPdf(item.booking)"
-        class="w-full py-2.5 rounded-xl font-bold text-xs uppercase bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-        </svg>
-        Upload PDF
-      </button>
-      } @else {
-      <button (click)="removeCustomerPdf(item.booking)"
-        class="w-full py-2.5 rounded-xl font-bold text-xs uppercase bg-red-600 text-white hover:bg-red-700 transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-          </path>
-        </svg>
-        Remove PDF
-      </button>
       }
     </div>
     }
     }
     }
     }
+
   </div>
 </div>
 

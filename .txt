@@ -2,11 +2,9 @@
 ---- auto delete my accepted bookings
 ----- paymnet k dekhn hai accpet hone k bad ya phir acpetd k phle -- or agr payment ho jay to accpeted or booking delete
 -- bit m bookignCode bhi bhejna hai ok  
-phle phase -- bit accepted ,  and booking m driverId and status uska assigned
+phle phase --   ted ,  and booking m driverId and status uska assigned
 --- in driver new booking top me dikhana chaiiye 
 
-Snackbar when bit submit
-update city me snackbar and navigate
 register hone m or login krne m bhaut time lerha hai dekhna ahi usko
 
 
