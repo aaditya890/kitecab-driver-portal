@@ -71,7 +71,7 @@
         </div>
 
 <!-- DATE & TIME (MOBILE SAFE) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
   <!-- DATE -->
   <div>
@@ -79,9 +79,10 @@
       Date
     </label>
     <input
-      type="date"
+      type="date" 
       formControlName="date"
-      class="w-full px-3 py-2.5
+      placeholder="Date"
+      class="w-full py-2.5 placeholder:text-white
              bg-slate-800 border-2 border-slate-700
              rounded-lg text-white text-sm
              focus:border-green-500
@@ -97,7 +98,8 @@
     <input
       type="time"
       formControlName="time"
-      class="w-full px-3 py-2.5
+      placeholder="Time"
+      class="w-full py-2.5
              bg-slate-800 border-2 border-slate-700
              rounded-lg text-white text-sm
              focus:border-green-500
