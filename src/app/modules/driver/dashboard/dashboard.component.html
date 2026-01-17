@@ -668,7 +668,7 @@
           </h3>
           <span
             class="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100 uppercase tracking-widest">
-            #{{ b.bookingCode }}
+            {{ b.bookingCode }}
           </span>
         </div>
 
@@ -771,7 +771,7 @@
      
       <!-- Booking Id -->
       <div class="flex px-1 justify-between py-[0.30rem] rounded-md bg-gray-50 text-indigo-700 text-xs font-bold gap-1 mb-2">
-        <p class="text-slate-500 font-semibold uppercase">BOOKING CODE : <span class="font-bold text-green-700">
+        <p class="text-slate-500 font-semibold uppercase">BOOKING ID : <span class="font-bold text-green-700">
             {{ item.bid.bookingCode }}
           </span></p>
       </div>
@@ -906,9 +906,9 @@
           {{ item.booking.date }} • {{ item.booking.time }}
         </p>
 
-        <!-- BOOKING CODE -->
+        <!-- BOOKING ID -->
         <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">
-          Booking Code: #{{ item.booking.bookingCode }}
+          Booking Id: {{ item.booking.bookingCode }}
         </p>
 
         <!-- MONEY (ONLY FROM BID) -->

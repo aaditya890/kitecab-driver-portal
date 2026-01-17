@@ -108,7 +108,7 @@ export class BookingService {
 
     tx.set(counterRef, { last: next }, { merge: true });
 
-    return `BK-${String(next).padStart(6, '0')}`;
+    return `#${String(next).padStart(6, '0')}`;
   });
 
   return bookingCode;
@@ -116,11 +116,12 @@ export class BookingService {
 
 
 async createBooking(data: Booking) {
-  const bookingCode = await this.generateBookingCode();
+  if (!data.bookingCode) {
+    throw new Error('Booking Id is required');
+  }
 
   const booking: Booking = {
     ...data,
-    bookingCode,
     status: 'active',
     createdAt: new Date(),
   };
@@ -128,6 +129,7 @@ async createBooking(data: Booking) {
   const ref = collection(this.fs, 'bookings');
   return addDoc(ref, booking);
 }
+
 
 // ✅ ADMIN: ASSIGN DRIVER + UPLOAD CUSTOMER PDF
 async assignDriverWithPdf(

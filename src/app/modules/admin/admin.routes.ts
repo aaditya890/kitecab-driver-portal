@@ -35,7 +35,12 @@ export const adminRoutes: Routes = [
       import('./driver-details/driver-details.component').then(m => m.DriverDetailsComponent),
     canActivate: [adminGuard]
   },
-
+  {
+    path: APP_ROUTES.ADMIN.CREATE_BOOKING,
+    loadComponent: () =>
+      import('./create-booking/create-booking.component').then(m => m.CreateBookingComponent),
+    canActivate: [adminGuard]
+  },
   {
     path: APP_ROUTES.ADMIN.BOOKING_LIST,
     loadComponent: () =>

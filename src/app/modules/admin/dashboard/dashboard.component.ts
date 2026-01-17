@@ -121,14 +121,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       await this.bidService.closeOtherBidsOfBooking(booking.id, bid.id)
       await this.bookingService.assignDriverWithPdf(booking.id, bid.driverId, "")
 
-      this.showSnack(`✓ Bid accepted & booking assigned to ${driverName}`, "success")
+      this.snackBar.open(`✓ Bid accepted & booking assigned to ${driverName}`, "success")
 
       await this.loadBidsTab()
       await this.loadAssignedBookings()
 
       this.activeTab = "assigned"
     } catch (err) {
-      this.showSnack("Error accepting bid", "error")
+      this.snackBar.open("Error accepting bid", "error")
     }
 
     this.acceptingBidId = null
@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   goToCreateBooking() {
-    this.router.navigate([APP_ROUTES.ADMIN.BASE, APP_ROUTES.ADMIN.BOOKING_LIST])
+    this.router.navigate([APP_ROUTES.ADMIN.BASE, APP_ROUTES.ADMIN.CREATE_BOOKING])
   }
 
   goToDrivers() {
@@ -196,15 +196,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     await this.loadAssignedBookings()
   }
 
-  showSnack(message: string, type: "success" | "error" | "info" = "info") {
-    const bgColor = type === "success" ? "bg-green-600" : type === "error" ? "bg-red-600" : "bg-blue-600"
-    this.snackBar.open(message, "✕", {
-      duration: 3000,
-      horizontalPosition: "center",
-      verticalPosition: "bottom",
-      panelClass: [bgColor],
-    })
-  }
 
   toggleBooking(bookingId: string | undefined) {
     if (!bookingId) return
@@ -235,10 +226,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     try {
       await this.bookingService.deleteBooking(booking.id!)
-      this.showSnack(`✓ Booking ${booking.bookingCode} deleted`, "success")
+      this.snackBar.open(`✓ Booking ${booking.bookingCode} deleted`, "success")
       await this.loadAdminBookings()
     } catch (err) {
-      this.showSnack("Error deleting booking", "error")
+      this.snackBar.open("Error deleting booking", "error")
     }
   }
 
