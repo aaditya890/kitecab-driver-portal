@@ -4,7 +4,6 @@ import { APP_ROUTES } from '../../../routes.constant';
 import { DriverService } from '../../../shared/services/driver.service';
 import { Driver } from '../../../shared/interfaces/driver.interface';
 import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

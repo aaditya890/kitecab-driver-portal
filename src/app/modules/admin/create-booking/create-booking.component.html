@@ -1,163 +1,181 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-4 pb-8">
-  <div class="max-w-2xl mx-auto">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-6 mb-6 shadow-2xl">
-      <h1 class="text-3xl font-bold">Create Booking</h1>
-      <p class="text-purple-100 text-sm mt-1">Set up a new ride booking with pricing and details</p>
-    </div>
-
-    <!-- Form Card -->
-    <div class="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-800">
-      <form [formGroup]="form" class="space-y-5">
-
-        <!-- BOOKING CODE -->
-        <div>
-          <label class="block text-sm font-bold text-slate-200 mb-2">Booking Code</label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">#</span>
-            <input type="tel" formControlName="bookingCode" placeholder="000001"
-              class="w-full pl-8 pr-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none transition" />
-          </div>
-          <!-- Added validation error message -->
-          <p *ngIf="getBookingCodeError" class="text-red-400 text-xs mt-1 font-medium">Booking code is required</p>
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-purple-600 to-pink-500 rounded-2xl py-3 px-5 mb-3 shadow-2xl">
+            <h1 class="text-xl font-bold">Create Booking</h1>
+            <p class="text-purple-100 text-xs mt-1">Set up a new ride booking with pricing and details</p>
         </div>
 
-        <!-- ROUTE -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Pickup Location</label>
-            <input formControlName="pickup" placeholder="City name"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-green-500 focus:outline-none transition" />
-            <p *ngIf="getPickupError" class="text-red-400 text-xs mt-1 font-medium">Pickup location required</p>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Drop Location</label>
-            <input formControlName="drop" placeholder="City name"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-red-500 focus:outline-none transition" />
-            <p *ngIf="getDropError" class="text-red-400 text-xs mt-1 font-medium">Drop location required</p>
-          </div>
-        </div>
+        <!-- Form Card -->
+        <div class="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-800">
+            <form [formGroup]="form" class="space-y-5">
 
-        <!-- ADDRESS -->
-        <div>
-          <label class="block text-sm font-bold text-slate-200 mb-2">Full Address</label>
-          <input formControlName="address" placeholder="Complete Address"
-            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none transition" />
-          <p *ngIf="getAddressError" class="text-red-400 text-xs mt-1 font-medium">Address is required</p>
-        </div>
+                <!-- BOOKING CODE -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-200 mb-2">Booking Code</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">#</span>
+                        <input type="tel" formControlName="bookingCode" placeholder="000001"
+                            class="w-full pl-8 pr-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none transition" />
+                    </div>
+                    <!-- Added validation error message -->
+                    @if (getBookingCodeError) {
+                        <p class="text-red-400 text-xs mt-1 font-medium">Booking code is
+                            required</p>
+                    }
+                </div>
 
-        <!-- RIDE & CAB TYPE -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Ride Type</label>
-            <select formControlName="rideType"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
-              <option value="oneway">One Way</option>
-              <option value="roundtrip">Round Trip</option>
-              <option value="localrental">Local Rental</option>
-            </select>
-            <p *ngIf="getRideTypeError" class="text-red-400 text-xs mt-1 font-medium">Ride type required</p>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Cab Type</label>
-            <select formControlName="cabType"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
-              <option value="hatchback">Hatchback</option>
-              <option value="sedan">Sedan</option>
-              <option value="suv">SUV</option>
-            </select>
-            <p *ngIf="getCabTypeError" class="text-red-400 text-xs mt-1 font-medium">Cab type required</p>
-          </div>
-        </div>
+                <!-- ROUTE -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Pickup Location</label>
+                        <input formControlName="pickup" placeholder="City name"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-green-500 focus:outline-none transition" />
+                            @if (getPickupError) {
+                                <p class="text-red-400 text-xs mt-1 font-medium">Pickup location required
+                                </p>
+                            }
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Drop Location</label>
+                        <input formControlName="drop" placeholder="City name"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-red-500 focus:outline-none transition" />
+                            @if (getDropError) {
+                                <p class="text-red-400 text-xs mt-1 font-medium">Drop location required</p>
+                            }
+                    </div>
+                </div>
 
-<!-- DATE & TIME (MOBILE SAFE) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- ADDRESS -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-200 mb-2">Full Address</label>
+                    <input formControlName="address" placeholder="Complete Address"
+                        class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none transition" />
+                        @if (getAddressError) {
+                            <p class="text-red-400 text-xs mt-1 font-medium">Address is required</p>
+                        }
+                    </div>
 
-  <!-- DATE -->
-  <div>
-    <label class="block text-sm font-bold text-slate-200 mb-1">
-      Date
-    </label>
-    <input
-      type="date" 
-      formControlName="date"
-      placeholder="Date"
-      class="w-full py-2.5 placeholder:text-white
+                <!-- RIDE & CAB TYPE -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Ride Type</label>
+                        <select formControlName="rideType"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
+                            <option value="oneway">One Way</option>
+                            <option value="roundtrip">Round Trip</option>
+                            <option value="localrental">Local Rental</option>
+                        </select>
+                        @if (getRideTypeError) {
+                            <p class="text-red-400 text-xs mt-1 font-medium">Ride type required</p>
+                        }
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Cab Type</label>
+                        <select formControlName="cabType"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
+                            <option value="hatchback">Hatchback</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="suv">SUV</option>
+                        </select>
+                        @if (getCabTypeError) {
+                            <p class="text-red-400 text-xs mt-1 font-medium">Cab type required</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- DATE & TIME (MOBILE SAFE) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                    <!-- DATE -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-1">
+                            Date
+                        </label>
+                        <input type="date" formControlName="date" placeholder="Date" class="w-full py-2.5 placeholder:text-white
              bg-slate-800 border-2 border-slate-700
              rounded-lg text-white text-sm
              focus:border-green-500
              outline-none
-             [color-scheme:dark]" />
-  </div>
+            " />
+                    </div>
 
-  <!-- TIME -->
-  <div>
-    <label class="block text-sm font-bold text-slate-200 mb-1">
-      Time
-    </label>
-    <input
-      type="time"
-      formControlName="time"
-      placeholder="Time"
-      class="w-full py-2.5
+                    <!-- TIME -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-1">
+                            Time
+                        </label>
+                        <input type="time" formControlName="time" placeholder="Time" class="w-full py-2.5
              bg-slate-800 border-2 border-slate-700
              rounded-lg text-white text-sm
              focus:border-green-500
              outline-none
-             [color-scheme:dark]" />
-  </div>
+             " />
+                    </div>
+                </div>
 
-</div>
 
+                <!-- PRICING -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Driver Income (₹)</label>
+                        <input type="number" formControlName="baseDriverIncome" placeholder="0"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition" />
+                        @if (getDriverIncomeError) {
+                            <p class="text-red-400 text-xs mt-1 font-medium">Amount required
+                                (minimum ₹1)</p>
+                        }
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Commission (₹)</label>
+                        <input type="number" formControlName="baseCommission" placeholder="0"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition" />
+                            @if (getCommissionError) {
+                        <p  class="text-red-400 text-xs mt-1 font-medium">Commission required
+                            (minimum ₹0)</p>
+                        }
+                    </div>
+                </div>
 
-        <!-- PRICING -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Driver Income (₹)</label>
-            <input type="number" formControlName="baseDriverIncome" placeholder="0"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition" />
-            <p *ngIf="getDriverIncomeError" class="text-red-400 text-xs mt-1 font-medium">Amount required (minimum ₹1)</p>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Commission (₹)</label>
-            <input type="number" formControlName="baseCommission" placeholder="0"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition" />
-            <p *ngIf="getCommissionError" class="text-red-400 text-xs mt-1 font-medium">Commission required (minimum ₹0)</p>
-          </div>
+                <!-- INCLUSIONS -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Toll</label>
+                        <select formControlName="toll"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
+                            <option value="included">Included</option>
+                            <option value="excluded">Excluded</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-200 mb-2">Parking</label>
+                        <select formControlName="parking"
+                            class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
+                            <option value="included">Included</option>
+                            <option value="excluded">Excluded</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="button" (click)="submit()" [disabled]="loading"
+                    class="w-full mt-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg uppercase text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl">
+                    @if (!loading) {
+                         <span>Create Booking</span> 
+                    }
+                   @if (loading) {
+                    <span  class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                        Creating...
+                    </span> 
+                   }
+                    
+                </button>
+            </form>
         </div>
-
-        <!-- INCLUSIONS -->
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Toll</label>
-            <select formControlName="toll"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
-              <option value="included">Included</option>
-              <option value="excluded">Excluded</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-slate-200 mb-2">Parking</label>
-            <select formControlName="parking"
-              class="w-full px-4 py-3 bg-slate-800 border-2 border-slate-700 rounded-lg text-white focus:border-purple-500 focus:outline-none transition">
-              <option value="included">Included</option>
-              <option value="excluded">Excluded</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- SUBMIT BUTTON -->
-        <button type="button" (click)="submit()" [disabled]="loading"
-          class="w-full mt-6 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg uppercase text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl">
-          <span *ngIf="!loading">Create Booking</span>
-          <span *ngIf="loading" class="flex items-center justify-center gap-2">
-            <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-            Creating...
-          </span>
-        </button>
-      </form>
     </div>
-  </div>
 </div>

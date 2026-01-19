@@ -4,7 +4,6 @@ import { BookingService } from '../../../shared/services/booking.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Booking } from '../../../shared/interfaces/booking.interface';
-import { CommonModule } from '@angular/common';
 
 type RideType = 'oneway' | 'roundtrip' | 'localrental';
 type CabType = 'hatchback' | 'sedan' | 'suv';
@@ -13,7 +12,7 @@ type Inclusion = 'included' | 'excluded';
 @Component({
   selector: 'app-create-booking',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule,CommonModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './create-booking.component.html',
   styleUrl: './create-booking.component.scss'
 })

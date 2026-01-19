@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { BookingService } from "../../../shared/services/booking.service";
@@ -12,7 +12,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 @Component({
   selector: "app-booking-details",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ ReactiveFormsModule],
   templateUrl: "./booking-details.component.html",
 })
 export class BookingDetailsComponent implements OnInit {
