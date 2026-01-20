@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number][type=number] {
+  -moz-appearance: textfield;
+}
+
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+button {
+  transition: all 0.2s ease;
+}
+button:active {
+  transform: scale(0.98);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.booking-details {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.booking-details .header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.booking-details .info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.booking-details .info .label {
+  font-weight: bold;
+}
+.booking-details .info .value {
+  color: #333333;
+}
+.booking-details .guest-info {
+  margin-bottom: 20px;
+}
+.booking-details .guest-info .name {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.booking-details .guest-info .email {
+  font-size: 16px;
+  color: #555555;
+}
+.booking-details .actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.booking-details .actions button {
+  margin-left: 10px;
+}/*# sourceMappingURL=booking-details.component.css.map */

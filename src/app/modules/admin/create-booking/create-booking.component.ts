@@ -4,6 +4,7 @@ import { BookingService } from '../../../shared/services/booking.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Booking } from '../../../shared/interfaces/booking.interface';
+import { APP_ROUTES } from '../../../routes.constant';
 
 type RideType = 'oneway' | 'roundtrip' | 'localrental';
 type CabType = 'hatchback' | 'sedan' | 'suv';
@@ -140,4 +141,12 @@ export class CreateBookingComponent {
     const hour = h % 12 || 12
     return `${hour}:${m.toString().padStart(2, "0")} ${ampm}`
   }
+
+  
+goToDashboard() {
+  this.router.navigate([
+    APP_ROUTES.ADMIN.BASE,
+    APP_ROUTES.ADMIN.DASHBOARD
+  ]);
+}
 }

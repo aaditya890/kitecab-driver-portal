@@ -7,3 +7,12 @@
 register hone m or login krne m bhaut time lerha hai dekhna ahi usko
 
 
+check the admin auth guards for admin page
+
+
+ADMIN SIDE
+driver card me starting me current city show krna hai and also--- detal page m jake location daknahia uska location card jisme 
+
+
+DRIVER SIDE
+- AGR DEACTIVE HAI TO USKO DEACTIVE DRIVER SHOW HONA CHIAYE OTHER WISE DAHBOARD M JYEGA

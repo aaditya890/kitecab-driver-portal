@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Driver } from '../interfaces/driver.interface';
-import { Firestore, doc, setDoc, getDoc, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, onSnapshot, collection, orderBy, query, getDocs, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DriverService {
@@ -37,9 +38,9 @@ export class DriverService {
     await setDoc(ref, { availableRoutes: routes }, { merge: true });
   }
 
-  async updateOnlineStatus(phone: string, status: boolean) {
+  async updateOnlineStatus(phone: string, onlineStatus: boolean) {
     const ref = doc(this.fs, 'drivers', phone);
-    await setDoc(ref, { onlineStatus: status }, { merge: true });
+    await updateDoc(ref, { onlineStatus });
   }
 
   listenToDriver(phone: string, cb: (d: Driver) => void) {
@@ -50,4 +51,35 @@ export class DriverService {
       }
     });
   }
+
+  // 🔥 CACHE
+  private drivers$ = new BehaviorSubject<Driver[] | null>(null);
+  private listenerStarted = false;
+
+  // 🔥 REALTIME DRIVERS LIST (NO RELOAD EVER)
+  getDrivers(): Observable<Driver[]> {
+    return new Observable((observer) => {
+      const ref = collection(this.fs, 'drivers');
+
+      const unsub = onSnapshot(ref, (snap) => {
+        const drivers: Driver[] = snap.docs.map(d => ({
+          id: d.id,
+          ...(d.data() as Driver),
+        }));
+        observer.next(drivers);
+      });
+
+      return () => unsub();
+    });
+  }
+
+async deleteDriver(phone: string) {
+  const ref = doc(this.fs, 'drivers', phone);
+  await deleteDoc(ref);
+}
+
+async updateDriverStatus(phone: string, status: 'approved' | 'pending' | 'blocked') {
+  const ref = doc(this.fs, 'drivers', phone);
+  await setDoc(ref, { status }, { merge: true });
+}
 }
