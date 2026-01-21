@@ -185,6 +185,17 @@ export class SignupComponent {
     }, 1000)
   }
 
+  forceUppercase(controlName: string) {
+  const control = this.form.get(controlName);
+  if (!control) return;
+
+  const value = control.value;
+  if (value) {
+    control.setValue(value.toUpperCase(), { emitEvent: false });
+  }
+}
+
+
   goToDriverLogin() {
     this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
   }

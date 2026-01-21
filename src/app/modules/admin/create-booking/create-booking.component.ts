@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../../shared/services/booking.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Booking } from '../../../shared/interfaces/booking.interface';
 import { APP_ROUTES } from '../../../routes.constant';
 
@@ -22,8 +22,67 @@ export class CreateBookingComponent {
   private bookingService = inject(BookingService)
   private snackbar = inject(MatSnackBar)
   private router = inject(Router)
+  private route = inject(ActivatedRoute);
+  isEditMode = false;
+  bookingId!: string;
 
   loading = false
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.isEditMode = true;
+      this.bookingId = id;
+      this.loadBookingForEdit(id);
+    }
+  }
+
+
+
+  async loadBookingForEdit(id: string) {
+    const booking = await this.bookingService.getBookingById(id);
+    if (!booking) return;
+    this.form.patchValue({
+      bookingCode: booking.bookingCode.replace('#', ''),
+      pickup: booking.pickup,
+      drop: booking.drop,
+      address: booking.address,
+      rideType: booking.rideType,
+      cabType: booking.cabType,
+
+      // ✅ FIXED
+      date: this.parseIndianDateToISO(booking.date),
+
+      // ✅ already correct
+      time: this.convert12To24(booking.time),
+
+      baseDriverIncome: booking.baseDriverIncome.toString(),
+      baseCommission: booking.baseCommission.toString(),
+      toll: booking.inclusions.toll,
+      parking: booking.inclusions.parking,
+    });
+  }
+  private convert12To24(time: string): string {
+    const [t, mod] = time.split(' ');
+    let [h, m] = t.split(':').map(Number);
+
+    if (mod === 'PM' && h !== 12) h += 12;
+    if (mod === 'AM' && h === 12) h = 0;
+
+    return `${h.toString().padStart(2, '0')}:${m}`;
+  }
+
+
+  private parseIndianDateToISO(dateStr: string): any {
+  // "20 January 2026" → "2026-01-20"
+  const d = new Date(dateStr);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 
   form = this.fb.group({
     bookingCode: ["", Validators.required],
@@ -34,7 +93,7 @@ export class CreateBookingComponent {
     rideType: ["oneway" as RideType, Validators.required],
     cabType: ["sedan" as CabType, Validators.required],
 
-    date: [null, Validators.required],
+    date: [new Date(), Validators.required],
     time: ["", Validators.required],
 
     baseDriverIncome: ["", [Validators.required, Validators.min(1)]],
@@ -84,47 +143,69 @@ export class CreateBookingComponent {
     return this.form.get("baseCommission")?.invalid && this.form.get("baseCommission")?.touched
   }
 
-  async submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched()
-      return
-    }
-
-    this.loading = true
-    const v = this.form.value
-
-    const rawCode = v.bookingCode!.trim()
-    const bookingCode = rawCode.startsWith("#") ? rawCode : `#${rawCode}`
-
-    const booking: Booking = {
-      bookingCode,
-      pickup: v.pickup!,
-      drop: v.drop!,
-      address: v.address!,
-      rideType: v.rideType!,
-      cabType: v.cabType!,
-      date: this.formatDate(v.date!),
-      time: this.formatTimeTo12Hour(v.time!),
-      baseDriverIncome: Number(v.baseDriverIncome),
-      baseCommission: Number(v.baseCommission),
-      inclusions: {
-        toll: v.toll!,
-        parking: v.parking!,
-      },
-      status: "active",
-      createdAt: new Date(),
-    }
-
-    try {
-      await this.bookingService.createBooking(booking)
-      this.snackbar.open("Booking created successfully", "OK", { duration: 2500 })
-      this.router.navigate(["/admin/dashboard"])
-    } catch {
-      this.snackbar.open("Failed to create booking", "OK", { duration: 2500 })
-    }
-
-    this.loading = false
+ async submit() {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  this.loading = true;
+  const v = this.form.value;
+
+  const rawCode = v.bookingCode!.trim();
+  const bookingCode = rawCode.startsWith("#") ? rawCode : `#${rawCode}`;
+
+  const bookingPayload: Partial<Booking> = {
+    bookingCode,
+    pickup: v.pickup!,
+    drop: v.drop!,
+    address: v.address!,
+    rideType: v.rideType!,
+    cabType: v.cabType!,
+    date: this.formatDate(v.date!),
+    time: this.formatTimeTo12Hour(v.time!),
+    baseDriverIncome: Number(v.baseDriverIncome),
+    baseCommission: Number(v.baseCommission),
+    inclusions: {
+      toll: v.toll!,
+      parking: v.parking!,
+    },
+    status: "active",
+  };
+
+  try {
+    if (this.isEditMode) {
+      // ✅ UPDATE EXISTING BOOKING
+      await this.bookingService.updateBooking(this.bookingId, bookingPayload);
+
+      this.snackbar.open("Booking updated successfully", "OK", {
+        duration: 2500,
+      });
+    } else {
+      // ✅ CREATE NEW BOOKING
+      await this.bookingService.createBooking({
+        ...(bookingPayload as Booking),
+        createdAt: new Date(),
+      });
+
+      this.snackbar.open("Booking created successfully", "OK", {
+        duration: 2500,
+      });
+    }
+
+    this.router.navigate([
+      APP_ROUTES.ADMIN.BASE,
+      APP_ROUTES.ADMIN.DASHBOARD,
+    ]);
+  } catch (err) {
+    this.snackbar.open("Failed to save booking", "OK", {
+      duration: 2500,
+    });
+  }
+
+  this.loading = false;
+}
+
 
   private formatDate(date: any): string {
     const d = new Date(date)
@@ -142,11 +223,11 @@ export class CreateBookingComponent {
     return `${hour}:${m.toString().padStart(2, "0")} ${ampm}`
   }
 
-  
-goToDashboard() {
-  this.router.navigate([
-    APP_ROUTES.ADMIN.BASE,
-    APP_ROUTES.ADMIN.DASHBOARD
-  ]);
-}
+
+  goToDashboard() {
+    this.router.navigate([
+      APP_ROUTES.ADMIN.BASE,
+      APP_ROUTES.ADMIN.DASHBOARD
+    ]);
+  }
 }

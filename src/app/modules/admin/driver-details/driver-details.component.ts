@@ -19,6 +19,8 @@ export class DriverDetailsComponent {
   private driverService = inject(DriverService);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  locationExpanded = false;
+
 
   driver: Driver | null = null;
   loading = true;
@@ -62,16 +64,16 @@ export class DriverDetailsComponent {
     });
   }
 
-  async deactivateDriver() {
+  async blockDriver() {
     if (!this.driver) return;
 
-    const ok = confirm('Deactivate this driver?');
+    const ok = confirm('Block this driver?');
     if (!ok) return;
 
     await this.driverService.updateOnlineStatus(this.driver.phone, false);
     await this.driverService.updateDriverStatus(this.driver.phone, 'blocked');
 
-    this.snackBar.open('Driver deactivated', 'OK', { duration: 2000 });
+    this.snackBar.open('Driver Blocked Success', 'OK', { duration: 2000 });
   }
 
   async deleteDriver() {
@@ -88,19 +90,19 @@ export class DriverDetailsComponent {
   }
 
   editDriver() {
-    alert('Edit driver coming soon');
+    alert("PAGE IN PROCESS")
   }
 
-  async activateDriver() {
+  async approveDriver() {
     if (!this.driver) return;
 
-    const ok = confirm('Activate this driver?');
+    const ok = confirm('Approve this driver?');
     if (!ok) return;
 
     await this.driverService.updateDriverStatus(this.driver.phone, 'approved');
     await this.driverService.updateOnlineStatus(this.driver.phone, true);
 
-    this.snackBar.open('Driver activated', 'OK', { duration: 2000 });
+    this.snackBar.open('Driver Approved', 'OK', { duration: 2000 });
   }
 
   openIdProof(url: string) {
@@ -110,6 +112,11 @@ export class DriverDetailsComponent {
     );
     window.open(previewUrl, '_blank');
   }
+
+  toggleLocationCard() {
+  this.locationExpanded = !this.locationExpanded;
+}
+
 
 
 }

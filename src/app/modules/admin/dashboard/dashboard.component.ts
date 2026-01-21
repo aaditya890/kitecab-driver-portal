@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog)
   private bidService = inject(BidService)
   private bookingService = inject(BookingService)
+  
 
   assignedBookings: AssignedBooking[] = []
   loadingAssigned = false
@@ -121,7 +122,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       await this.bidService.closeOtherBidsOfBooking(booking.id, bid.id)
       await this.bookingService.assignDriverWithPdf(booking.id, bid.driverId, "")
 
-      this.snackBar.open(`✓ Bid accepted & booking assigned to ${driverName}`, "success")
+      this.snackBar.open(`✓ Bid accepted & booking assigned to ${driverName}`, "Ok",{
+        duration:3000
+      })
 
       await this.loadBidsTab()
       await this.loadAssignedBookings()
@@ -183,7 +186,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
       const pdfUrl = await this.cloudinary.uploadFile(file)
       await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, pdfUrl)
-      this.snackBar.open("✓ PDF uploaded", "success")
+      this.snackBar.open("✓ PDF uploaded", "Close",{
+        duration:3000
+      })
       await this.loadAssignedBookings()
     }
 
@@ -192,7 +197,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   async removeCustomerPdf(booking: Booking) {
     await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, "")
-    this.snackBar.open("✓ PDF removed", "success")
+    this.snackBar.open("✓ PDF removed", "Close",{
+      duration:3000
+    })
     await this.loadAssignedBookings()
   }
 
@@ -215,23 +222,32 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.adminBookings = await this.bookingService.getAllBookings()
     this.loadingBookings = false
   }
+async deleteBooking(booking: Booking) {
+  const confirmed = await this.showConfirmDialog(
+    "Delete Booking",
+    `Delete booking ${booking.bookingCode}?\n\nRoute: ${booking.pickup} → ${booking.drop}\n\nThis action cannot be undone.`
+  )
 
-  async deleteBooking(booking: Booking) {
-    const confirmed = await this.showConfirmDialog(
-      "Delete Booking",
-      `Delete booking ${booking.bookingCode}?\n\nRoute: ${booking.pickup} → ${booking.drop}\n\nThis action cannot be undone.`,
+  if (!confirmed) return
+
+  try {
+    await this.bookingService.deleteBooking(booking.id!)
+
+    this.snackBar.open(
+      `✓ Booking ${booking.bookingCode} deleted`,
+      "Close",
+      { duration: 3000 }
     )
 
-    if (!confirmed) return
+    // 🔥 IMPORTANT: dono tabs refresh karo
+    await this.loadAdminBookings()
+    await this.loadAssignedBookings()
 
-    try {
-      await this.bookingService.deleteBooking(booking.id!)
-      this.snackBar.open(`✓ Booking ${booking.bookingCode} deleted`, "success")
-      await this.loadAdminBookings()
-    } catch (err) {
-      this.snackBar.open("Error deleting booking", "error")
-    }
+  } catch (err) {
+    this.snackBar.open("Error deleting booking", "error")
   }
+}
+
 
   private showConfirmDialog(title: string, message: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -239,8 +255,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       resolve(confirmed)
     })
   }
+editBooking(booking: Booking) {
+  if (!booking.id) return;
 
-  editBooking(booking: Booking) {
-    this.router.navigate([APP_ROUTES.ADMIN.BASE, APP_ROUTES.ADMIN.BOOKING_LIST, booking.id])
-  }
+  this.router.navigateByUrl(
+    `/${APP_ROUTES.ADMIN.BASE}/${APP_ROUTES.ADMIN.BOOKING_EDIT_ID(booking.id)}`
+  );
+}
+
+
+
+
 }

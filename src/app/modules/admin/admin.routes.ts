@@ -41,6 +41,14 @@ export const adminRoutes: Routes = [
       import('./create-booking/create-booking.component').then(m => m.CreateBookingComponent),
     canActivate: [adminGuard]
   },
+{
+  path: APP_ROUTES.ADMIN.BOOKING_EDIT,
+  loadComponent: () =>
+    import('./create-booking/create-booking.component')
+      .then(m => m.CreateBookingComponent),
+  canActivate: [adminGuard]
+}
+,
   {
     path: APP_ROUTES.ADMIN.BOOKING_LIST,
     loadComponent: () =>

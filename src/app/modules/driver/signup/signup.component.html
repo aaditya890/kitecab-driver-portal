@@ -201,9 +201,17 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle Model *</label>
-              <input formControlName="vehicleModel" type="text"
-                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                placeholder="e.g. Swift">
+             <input
+  formControlName="vehicleModel"
+  type="text"
+  (input)="forceUppercase('vehicleModel')"
+  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg
+         focus:ring-2 focus:ring-blue-500 focus:border-transparent
+         outline-none text-sm uppercase text-gray-900
+         placeholder-gray-500 font-medium bg-gray-50"
+  placeholder="e.g. SWIFT"
+/>
+
             </div>
           </div>
 
@@ -211,9 +219,17 @@
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-gray-900 mb-1.5">Vehicle. Number. *</label>
-              <input formControlName="vehicleNumber" type="text"
-                class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm uppercase text-gray-900 placeholder-gray-500 font-medium bg-gray-50"
-                placeholder="CG10XXXX">
+              <input
+  formControlName="vehicleNumber"
+  type="text"
+  (input)="forceUppercase('vehicleNumber')"
+  class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg
+         focus:ring-2 focus:ring-blue-500 focus:border-transparent
+         outline-none text-sm uppercase text-gray-900
+         placeholder-gray-500 font-medium bg-gray-50"
+  placeholder="CG10XXXX"
+/>
+
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-900 mb-1.5">ID Type *</label>

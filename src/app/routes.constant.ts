@@ -23,6 +23,8 @@ export const APP_ROUTES = {
     BOOKING_LIST: 'booking-list',
     DRIVERS: 'driver',
     CREATE_BOOKING: 'create-booking',
+     BOOKING_EDIT: 'booking/edit/:id', 
+     BOOKING_EDIT_ID: (id: any) => `booking/edit/${id}`,
     DRIVER_DETAILS: 'driver/:id',
     BOOKING_DETAILS: 'booking/:id',
 

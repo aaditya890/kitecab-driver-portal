@@ -89,11 +89,12 @@ export class DriversComponent {
   }
 
   edit(driver: Driver) {
-    this.router.navigate([
-      APP_ROUTES.ADMIN.BASE,
-      APP_ROUTES.ADMIN.DRIVER_DETAILS,
-      driver.phone
-    ], { queryParams: { edit: true } });
+    alert("PAGE IN PROCESS")
+    // this.router.navigate([
+    //   APP_ROUTES.ADMIN.BASE,
+    //   APP_ROUTES.ADMIN.DRIVER_DETAILS,
+    //   driver.phone
+    // ], { queryParams: { edit: true } });
   }
 
   delete(driver: Driver) {

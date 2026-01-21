@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { APP_ROUTES } from './routes.constant';
 
+
 export const routes: Routes = [
     // DRIVER MODULE
   {
@@ -30,5 +31,5 @@ export const routes: Routes = [
   },
 
   // 404 fallback (optional)
-  { path: '**', redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}` }
+  // { path: '**', redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}` }
 ];
