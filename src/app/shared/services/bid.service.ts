@@ -151,4 +151,19 @@ async closeOtherBidsOfBooking(bookingId: string, acceptedBidId: string) {
     }
   }
 
-}}
+}
+
+// bid.service.ts
+async deleteBidsByBookingId(bookingId: string) {
+  const ref = collection(this.fs, 'bids');
+  const q = query(ref, where('bookingId', '==', bookingId));
+  const snap = await getDocs(q);
+
+  const deletes = snap.docs.map(d =>
+    deleteDoc(doc(this.fs, 'bids', d.id))
+  );
+
+  await Promise.all(deletes);
+}
+
+}

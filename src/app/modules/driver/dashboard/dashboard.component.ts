@@ -10,11 +10,13 @@ import { BidService } from '../../../shared/services/bid.service';
 import { Bid } from '../../../shared/interfaces/bid.interface';
 import { NgClass } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ViewCustomerDetailDialogComponent } from '../../admin/view-customer-detail-dialog/view-customer-detail-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ReactiveFormsModule,NgClass],
+  imports: [ReactiveFormsModule,NgClass,MatDialogModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -25,6 +27,7 @@ export class DashboardComponent {
   private driverService = inject(DriverService);
   private bidService = inject(BidService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog)
   myBidsWithBooking: Array<{
     bid: Bid;
     booking: Booking | null;
@@ -218,4 +221,14 @@ openCustomerPdf(url: string) {
   );
   window.open(previewUrl, '_blank');
 }
+
+
+viewCustomerDetails(details: any) {
+  this.dialog.open(ViewCustomerDetailDialogComponent, {
+    width: '90%',
+    maxWidth: '420px',
+    data: details
+  });
+}
+
 }

@@ -13,8 +13,7 @@ import { CloudinaryService } from '../../../shared/services/cloudinary.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NgClass } from '@angular/common';
-
-
+import { AddCustomerDetailDialogComponent } from '../add-customer-detail-dialog/add-customer-detail-dialog.component';
 
 interface BookingWithBids {
   booking: Booking;
@@ -45,7 +44,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog)
   private bidService = inject(BidService)
   private bookingService = inject(BookingService)
-  
+
 
   assignedBookings: AssignedBooking[] = []
   loadingAssigned = false
@@ -122,8 +121,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       await this.bidService.closeOtherBidsOfBooking(booking.id, bid.id)
       await this.bookingService.assignDriverWithPdf(booking.id, bid.driverId, "")
 
-      this.snackBar.open(`✓ Bid accepted & booking assigned to ${driverName}`, "Ok",{
-        duration:3000
+      this.snackBar.open(`✓ Bid accepted & booking assigned to ${driverName}`, "Ok", {
+        duration: 3000
       })
 
       await this.loadBidsTab()
@@ -175,34 +174,170 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.loadingAssigned = false
   }
 
-  async uploadCustomerPdf(booking: Booking) {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = "application/pdf"
+  // async uploadCustomerPdf(booking: Booking) {
+  //   const input = document.createElement("input")
+  //   input.type = "file"
+  //   input.accept = "application/pdf"
 
-    input.onchange = async () => {
-      const file = input.files?.[0]
-      if (!file) return
+  //   input.onchange = async () => {
+  //     const file = input.files?.[0]
+  //     if (!file) return
 
-      const pdfUrl = await this.cloudinary.uploadFile(file)
-      await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, pdfUrl)
-      this.snackBar.open("✓ PDF uploaded", "Close",{
-        duration:3000
-      })
-      await this.loadAssignedBookings()
+  //     const pdfUrl = await this.cloudinary.uploadFile(file)
+  //     await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, pdfUrl)
+  //     this.snackBar.open("✓ PDF uploaded", "Close", {
+  //       duration: 3000
+  //     })
+  //     await this.loadAssignedBookings()
+  //   }
+
+  //   input.click()
+  // }
+
+  // async removeCustomerPdf(booking: Booking) {
+  //   await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, "")
+  //   this.snackBar.open("✓ PDF removed", "Close", {
+  //     duration: 3000
+  //   })
+  //   await this.loadAssignedBookings()
+  // }
+
+
+openAddCustomerDetails(booking: Booking) {
+  // 🔥 remove focus from button
+  (document.activeElement as HTMLElement)?.blur();
+
+  const dialogRef = this.dialog.open(AddCustomerDetailDialogComponent, {
+    width: '95%',
+    maxWidth: '420px',
+    autoFocus: true,          // 👈 important
+    restoreFocus: true,       // 👈 important
+    data: {
+      booking,
+      mode: 'add'
     }
+  });
 
-    input.click()
+  dialogRef.afterClosed().subscribe(async (details) => {
+    if (!details) return;
+
+    await this.bookingService.updateBooking(booking.id!, {
+      customerDetails: {
+        ...details,
+        isHidden: false
+      }
+    });
+
+    this.snackBar.open("✓ Customer details added", "Close", {
+      duration: 3000
+    });
+
+     await this.loadAssignedBookings();
+      await this.loadAdminBookings();
+  });
+}
+
+
+  openEditCustomerDetails(booking: Booking) {
+    if (!booking.customerDetails) return;
+
+    const dialogRef = this.dialog.open(AddCustomerDetailDialogComponent, {
+      width: '95%',
+      maxWidth: '420px',
+      data: {
+        booking,
+        mode: 'edit'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(async (details) => {
+      if (!details) return;
+
+      await this.bookingService.updateBooking(booking.id!, {
+        customerDetails: {
+          ...details,
+          isHidden: false
+        }
+      });
+
+      this.snackBar.open("✓ Customer details updated", "Close", {
+        duration: 3000
+      });
+
+      await this.loadAssignedBookings();
+      await this.loadAdminBookings();
+    });
   }
 
-  async removeCustomerPdf(booking: Booking) {
-    await this.bookingService.assignDriverWithPdf(booking.id!, booking.selectedDriverId!, "")
-    this.snackBar.open("✓ PDF removed", "Close",{
-      duration:3000
-    })
-    await this.loadAssignedBookings()
+
+  async hideCustomerDetails(booking: Booking) {
+    if (!booking.id || !booking.customerDetails) return;
+
+    await this.bookingService.updateBooking(booking.id, {
+      customerDetails: {
+        ...booking.customerDetails,
+        isHidden: true
+      }
+    });
+
+    // 🔥 IMPORTANT: local state update
+    booking.customerDetails.isHidden = true;
+
+    this.snackBar.open("Customer details hidden", "OK", {
+      duration: 2000
+    });
+
+    await this.loadAssignedBookings();
   }
 
+
+  async showCustomerDetails(booking: Booking) {
+    if (!booking.id || !booking.customerDetails) return;
+
+    await this.bookingService.updateBooking(booking.id, {
+      customerDetails: {
+        ...booking.customerDetails,
+        isHidden: false
+      }
+    });
+
+    // 🔥 IMPORTANT: local state update
+    booking.customerDetails.isHidden = false;
+
+    this.snackBar.open("Customer details visible", "OK", {
+      duration: 2000
+    });
+
+    await this.loadAssignedBookings();
+  }
+
+
+  async deleteBooking(booking: Booking) {
+    const confirmed = await this.showConfirmDialog(
+      "Delete Booking",
+      `Delete booking ${booking.bookingCode}?\n\nAll related bids will also be removed.\n\nThis action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await this.bookingService.deleteBookingWithBids(booking.id!);
+
+      this.snackBar.open(
+        `✓ Booking ${booking.bookingCode} & bids deleted`,
+        "Close",
+        { duration: 3000 }
+      );
+
+      // 🔥 Refresh everything
+      await this.loadAdminBookings();
+      await this.loadAssignedBookings();
+      await this.loadBidsTab();
+
+    } catch (err) {
+      this.snackBar.open("Error deleting booking", "Close");
+    }
+  }
 
   toggleBooking(bookingId: string | undefined) {
     if (!bookingId) return
@@ -222,32 +357,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.adminBookings = await this.bookingService.getAllBookings()
     this.loadingBookings = false
   }
-async deleteBooking(booking: Booking) {
-  const confirmed = await this.showConfirmDialog(
-    "Delete Booking",
-    `Delete booking ${booking.bookingCode}?\n\nRoute: ${booking.pickup} → ${booking.drop}\n\nThis action cannot be undone.`
-  )
-
-  if (!confirmed) return
-
-  try {
-    await this.bookingService.deleteBooking(booking.id!)
-
-    this.snackBar.open(
-      `✓ Booking ${booking.bookingCode} deleted`,
-      "Close",
-      { duration: 3000 }
-    )
-
-    // 🔥 IMPORTANT: dono tabs refresh karo
-    await this.loadAdminBookings()
-    await this.loadAssignedBookings()
-
-  } catch (err) {
-    this.snackBar.open("Error deleting booking", "error")
-  }
-}
-
 
   private showConfirmDialog(title: string, message: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -255,13 +364,14 @@ async deleteBooking(booking: Booking) {
       resolve(confirmed)
     })
   }
-editBooking(booking: Booking) {
-  if (!booking.id) return;
 
-  this.router.navigateByUrl(
-    `/${APP_ROUTES.ADMIN.BASE}/${APP_ROUTES.ADMIN.BOOKING_EDIT_ID(booking.id)}`
-  );
-}
+  editBooking(booking: Booking) {
+    if (!booking.id) return;
+
+    this.router.navigateByUrl(
+      `/${APP_ROUTES.ADMIN.BASE}/${APP_ROUTES.ADMIN.BOOKING_EDIT_ID(booking.id)}`
+    );
+  }
 
 
 

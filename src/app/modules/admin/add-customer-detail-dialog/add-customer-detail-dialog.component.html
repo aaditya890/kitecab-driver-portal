@@ -1,0 +1,182 @@
+<div class="bg-white max-w-md w-full overflow-hidden">
+
+  <!-- HEADER -->
+  <div class="bg-[#3f51b5] px-6 py-4 flex items-center justify-between">
+    <div>
+      <h2 class="text-lg font-bold text-white">
+        {{ data.mode === 'edit' ? 'Edit Customer Details' : 'Add Customer Details' }}
+      </h2>
+      <p class="text-xs text-indigo-100 mt-0.5">
+        Information will be shared with driver
+      </p>
+
+    </div>
+    <button (click)="close()" title="Close dialog" class="h-10 w-10
+         bg-white rounded-full
+         flex items-center justify-center
+         shadow-md hover:shadow-lg
+         transition active:scale-95">
+      <svg class="w-5 h-5 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+
+        <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59
+         7.11 5.7a1 1 0 0 0-1.41 1.42L10.59 12
+         5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41
+         16.89 18.3a1 1 0 0 0 1.41-1.41L13.41 12
+         18.3 7.11a1 1 0 0 0 0-1.4z" />
+      </svg>
+
+    </button>
+
+  </div>
+
+  <!-- FORM -->
+  <form [formGroup]="form" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+
+    <!-- NAME FIELD -->
+    <div>
+      <label class="text-xs font-bold text-slate-600 mb-1 block">
+        <span class="text-red-500">*</span> Customer Name
+      </label>
+      <input formControlName="name" type="text" placeholder="Enter customer name"
+        class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
+        [class.border-red-500]="form.get('name')?.invalid && form.get('name')?.touched"
+        [class.border-slate-300]="!form.get('name')?.invalid || !form.get('name')?.touched" />
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
+      <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" />
+        </svg>
+        {{ nameError }}
+      </p>
+      }
+    </div>
+
+    <!-- PHONE FIELD -->
+    <div>
+      <label class="text-xs font-bold text-slate-600 mb-1 block">
+        <span class="text-red-500">*</span> Phone Number
+      </label>
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-sm">+91</span>
+        <input formControlName="phone" type="tel" placeholder="9XXXXXXXXX" maxlength="10"
+          class="w-full pl-12 pr-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
+          [class.border-red-500]="form.get('phone')?.invalid && form.get('phone')?.touched"
+          [class.border-slate-300]="!form.get('phone')?.invalid || !form.get('phone')?.touched" />
+      </div>
+      @if (form.get('phone')?.valid && form.get('phone')?.value) {
+      <p class="text-xs text-green-600 mt-1">✓ {{ formatPhoneForDisplay() }}</p>
+      }
+      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+      <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" />
+        </svg>
+        {{ phoneError }}
+      </p>
+      }
+    </div>
+
+    <!-- PICKUP ADDRESS -->
+    <div>
+      <label class="text-xs font-bold text-slate-600 mb-1 block">
+        <span class="text-red-500">*</span> Pickup Address
+      </label>
+      <textarea formControlName="pickupAddress" rows="2" placeholder="Enter full pickup address"
+        class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm resize-none"
+        [class.border-red-500]="form.get('pickupAddress')?.invalid && form.get('pickupAddress')?.touched"
+        [class.border-slate-300]="!form.get('pickupAddress')?.invalid || !form.get('pickupAddress')?.touched"></textarea>
+      @if (form.get('pickupAddress')?.invalid && form.get('pickupAddress')?.touched) {
+      <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" />
+        </svg>
+        {{ pickupError }}
+      </p>
+      }
+    </div>
+
+    <!-- DROP ADDRESS -->
+    <div>
+      <label class="text-xs font-bold text-slate-600 mb-1 block">
+        <span class="text-red-500">*</span> Drop Address
+      </label>
+      <textarea formControlName="dropAddress" rows="2" placeholder="Enter full drop address"
+        class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm resize-none"
+        [class.border-red-500]="form.get('dropAddress')?.invalid && form.get('dropAddress')?.touched"
+        [class.border-slate-300]="!form.get('dropAddress')?.invalid || !form.get('dropAddress')?.touched"></textarea>
+      @if (form.get('dropAddress')?.invalid && form.get('dropAddress')?.touched) {
+      <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" />
+        </svg>
+        {{ dropError }}
+      </p>
+      }
+    </div>
+
+    <!-- DATE & TIME ROW -->
+    <div class="grid grid-cols-2 gap-3">
+      <!-- DATE -->
+      <div>
+        <label class="text-xs font-bold text-slate-600 mb-1 block">
+          <span class="text-red-500">*</span> Date
+        </label>
+        <input formControlName="date" type="date"
+          class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
+          [class.border-red-500]="form.get('date')?.invalid && form.get('date')?.touched"
+          [class.border-slate-300]="!form.get('date')?.invalid || !form.get('date')?.touched" />
+        @if (form.get('date')?.invalid && form.get('date')?.touched) {
+        <p class="text-xs text-red-500 mt-1">{{ dateError }}</p>
+        }
+      </div>
+
+      <!-- TIME -->
+      <div>
+        <label class="text-xs font-bold text-slate-600 mb-1 block">
+          <span class="text-red-500">*</span> Time
+        </label>
+        <input formControlName="time" type="time"
+          class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm"
+          [class.border-red-500]="form.get('time')?.invalid && form.get('time')?.touched"
+          [class.border-slate-300]="!form.get('time')?.invalid || !form.get('time')?.touched" />
+        @if (form.get('time')?.invalid && form.get('time')?.touched) {
+        <p class="text-xs text-red-500 mt-1">{{ timeError }}</p>
+        }
+      </div>
+    </div>
+
+    <!-- NOTE (OPTIONAL) -->
+    <div>
+      <label class="text-xs font-bold text-slate-600 mb-1 block">
+        Special Instructions <span class="text-slate-400">(optional)</span>
+      </label>
+      <textarea formControlName="note" rows="2" placeholder="Any special instructions for the driver..."
+        class="w-full px-3 py-2.5 rounded-lg bg-slate-50 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm resize-none"></textarea>
+      <p class="text-xs text-slate-500 mt-1">
+        {{ form.get('note')?.value?.length || 0 }}/500 characters
+      </p>
+    </div>
+
+  </form>
+
+  <!-- FOOTER -->
+  <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex gap-2">
+    <button (click)="close()" mat-stroked-button class="flex-1">
+      Cancel
+    </button>
+   <button 
+  (click)="save()" 
+  [disabled]="form.invalid"
+  mat-raised-button 
+  color="primary"
+  class="flex-1 disabled:opacity-50 disabled:cursor-not-allowed">
+  {{ data.mode === 'edit' ? 'Update Details' : 'Save Details' }}
+</button>
+
+  </div>
+
+</div>

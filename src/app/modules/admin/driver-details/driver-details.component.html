@@ -1,6 +1,5 @@
 <!-- HEADER LINE -->
-<div
-  class="relative
+<div class="relative
          flex items-center justify-between
          px-4 py-3
          bg-slate-900/80 backdrop-blur
@@ -13,25 +12,15 @@
   </span>
 
   <!-- RIGHT : CLOSE BUTTON -->
-  <button
-    (click)="goBack()"
-    class="w-8 h-8 rounded-full
+  <button (click)="goBack()" class="w-8 h-8 rounded-full
            bg-slate-700 hover:bg-slate-600
            flex items-center justify-center
            transition-all active:scale-95">
 
-    <svg
-      class="w-5 h-5 text-white"
-      fill="none" stroke="currentColor"
-      viewBox="0 0 24 24">
-      <path stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2.5"
-            d="M6 18L18 6M6 6l12 12" />
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
     </svg>
-
   </button>
-
 </div>
 
 <div class="min-h-screen bg-slate-950 text-white pb-6">
@@ -129,56 +118,49 @@
           </svg>
 
         </button>
-     @if (locationExpanded) {
+        @if (locationExpanded) {
 
-  @if (driver.availableRoutes?.length) {
+        @if (driver.availableRoutes?.length) {
 
-    <!-- ROUTES LIST -->
-    <div
-      class="px-3 pb-3 pt-2 space-y-1.5
+        <!-- ROUTES LIST -->
+        <div class="px-3 pb-3 pt-2 space-y-1.5
              border-t border-slate-700
              bg-slate-900/30
              max-h-40 overflow-y-auto">
 
-      @for (r of driver.availableRoutes; track $index) {
-        <div class="flex justify-between text-xs mb-2">
-          <span class="text-slate-300 font-medium truncate">
-            {{ r.from }}
-          </span>
+          @for (r of driver.availableRoutes; track $index) {
+          <div class="flex justify-between text-xs mb-2">
+            <span class="text-slate-300 font-medium truncate">
+              {{ r.from }}
+            </span>
 
-          <svg
-            class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0"
-            fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
+            <svg class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
 
-          <span class="text-slate-300 font-medium truncate">
-            {{ r.to }}
-          </span>
+            <span class="text-slate-300 font-medium truncate">
+              {{ r.to }}
+            </span>
+          </div>
+          }
+
         </div>
-      }
 
-    </div>
+        } @else {
 
-  } @else {
-
-    <!-- NO ROUTES (ONLY AFTER TOGGLE) -->
-    <div
-      class="px-3 py-3 text-center
+        <!-- NO ROUTES (ONLY AFTER TOGGLE) -->
+        <div class="px-3 py-3 text-center
              border-t border-slate-700
              bg-slate-900/30 rounded-b-lg">
-      <p class="text-xs text-slate-400 font-medium">
-        No available routes
-      </p>
-    </div>
+          <p class="text-xs text-slate-400 font-medium">
+            No available routes
+          </p>
+        </div>
 
-  }
+        }
 
-}
+        }
 
       </div>
 

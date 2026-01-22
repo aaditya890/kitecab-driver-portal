@@ -13,12 +13,14 @@ import {
   where
 } from '@angular/fire/firestore';
 import { Booking } from '../interfaces/booking.interface';
+import { BidService } from './bid.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookingService {
   private fs = inject(Firestore);
+  private bidService = inject(BidService)
 
   // ✅ DASHBOARD DATA
   async getDashboardData(driverId: string) {
@@ -132,9 +134,9 @@ export class BookingService {
 
 
   async updateBooking(id: string, data: Partial<Booking>) {
-    const ref = doc(this.fs, 'bookings', id);
-    return updateDoc(ref, data);
-  }
+  const ref = doc(this.fs, 'bookings', id);
+  return updateDoc(ref, data);
+}
 
   // ✅ ADMIN: ASSIGN DRIVER + UPLOAD CUSTOMER PDF
   async assignDriverWithPdf(
@@ -163,5 +165,15 @@ export class BookingService {
     }));
   }
 
+
+    // 🔥 MASTER DELETE (BOOKING + ALL BIDS)
+  async deleteBookingWithBids(bookingId: string) {
+    // 1️⃣ delete all bids of this booking
+    await this.bidService.deleteBidsByBookingId(bookingId);
+
+    // 2️⃣ delete booking itself
+    const ref = doc(this.fs, 'bookings', bookingId);
+    await deleteDoc(ref);
+  }
 
 }

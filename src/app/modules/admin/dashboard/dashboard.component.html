@@ -640,39 +640,69 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
 
-          <!-- PDF Action Button -->
-          @if (!item.booking.customerPdfUrl) {
-          <button (click)="uploadCustomerPdf(item.booking)"
-            class="flex-1 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition active:scale-95 flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-            </svg>
-            Upload PDF
+          <!-- ================= ADD ================= -->
+          @if (!item.booking.customerDetails) {
+
+          <button (click)="openAddCustomerDetails(item.booking)" class="flex-1 py-2 rounded-lg text-xs font-bold
+             bg-indigo-600 text-white
+             hover:bg-indigo-700 transition active:scale-95">
+            ➕ Add Customer Details
           </button>
+
           } @else {
-          <button (click)="removeCustomerPdf(item.booking)"
-            class="flex-1 py-2 rounded-lg text-xs font-bold bg-red-600 text-white hover:bg-red-700transition active:scale-95 flex items-center justify-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
-            </svg>
-            Remove PDF
+
+          <!-- ================= EDIT (only when visible) ================= -->
+          @if (!item.booking.customerDetails.isHidden) {
+
+          <button (click)="openEditCustomerDetails(item.booking)" class="flex-1 py-2 rounded-lg text-xs font-bold
+               bg-yellow-500 text-white
+               hover:bg-yellow-600 transition active:scale-95">
+            ✏️ Edit Details
           </button>
+
           }
 
+          <!-- ================= HIDE ================= -->
+          @if (!item.booking.customerDetails.isHidden) {
 
-          <button (click)="deleteBooking(item.booking); $event.stopPropagation()"
-            class="flex-1 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition active:scale-95 flex items-center justify-center gap-1.5">
-            <svg class="w-[1.20rem] h-[1.30rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+          <button (click)="hideCustomerDetails(item.booking)" class="flex-1 py-2 rounded-lg text-xs font-bold
+               bg-red-600 text-white
+               hover:bg-red-700 transition active:scale-95">
+            ❌ Hide Details
+          </button>
+
+          } @else {
+
+          <!-- ================= SHOW ================= -->
+          <button (click)="showCustomerDetails(item.booking)" class="flex-1 py-2 rounded-lg text-xs font-bold
+               bg-green-600 text-white
+               hover:bg-green-700 transition active:scale-95">
+            👁 Show Details
+          </button>
+
+          }
+
+          }
+
+          <!-- ================= DELETE BOOKING ================= -->
+          <button (click)="deleteBooking(item.booking); $event.stopPropagation()" class="flex-1 py-2 rounded-lg text-xs font-bold
+           text-white bg-red-600 hover:bg-red-700
+           transition active:scale-95
+           flex items-center justify-center gap-1.5">
+
+            <svg class="w-[1.2rem] h-[1.3rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7
+           m5 4v6m4-6v6m1-10V4
+           a1 1 0 00-1-1h-4
+           a1 1 0 00-1 1v3M4 7h16">
               </path>
             </svg>
+
             Delete
           </button>
+
         </div>
+
 
       </div>
       }

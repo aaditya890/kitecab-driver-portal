@@ -29,8 +29,10 @@ export interface Booking {
 
   // ---- ASSIGNMENT ----
   status: 'active' | 'inactive' | 'assigned' | 'completed' | 'paid';
-    // 🔥 NEW
-  customerPdfUrl?: string;   // <-- ADMIN UPLOADS THIS
+
+    // 🔥 BILL URL PDF
+  customerPdfUrl?: string;   
+
   selectedDriverId?: string;
 
   // ---- PAYMENT (FUTURE) ----
@@ -40,4 +42,18 @@ export interface Booking {
   paymentMethod?: 'online' | 'upi' | 'cash';
 
   createdAt: any;
+
+
+  customerDetails?: {
+    name: string
+    phone: string
+    pickupAddress: string
+    dropAddress: string
+    date: string
+    time: string
+    note?: string
+    addedAt: Date
+    addedBy: 'KITECAB TAXI SERVICE'
+    isHidden?:boolean
+  }
 }

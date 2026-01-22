@@ -1,20 +1,10 @@
-
----- auto delete my accepted bookings
 ----- paymnet k dekhn hai accpet hone k bad ya phir acpetd k phle -- or agr payment ho jay to accpeted or booking delete
--- bit m bookignCode bhi bhejna hai ok  
-
---- in driver new booking top me dikhana chaiiye 
-register hone m or login krne m bhaut time lerha hai dekhna ahi usko
-
-
-check the admin auth guards for admin page
-
-
+----- notificastion ka dekhna hai booking create hone k bad jo jay and accept hone k bad driver ko jay js
 ADMIN SIDE
-driver card me starting me current city show krna hai and also--- detal page m jake location daknahia uska location card jisme 
 - DRIVER EDIT PAGE BANANA HAI
 
 DRIVER SIDE
 - AGR DEACTIVE HAI TO USKO DEACTIVE DRIVER SHOW HONA CHIAYE OTHER WISE DAHBOARD M JYEGA
 - bit amount not greter than the driver income
 - vehicle model me user ko string bs dena hai
+--- in driver new booking top me dikhana chaiiye 
