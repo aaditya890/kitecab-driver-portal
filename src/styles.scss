@@ -48,3 +48,10 @@ body,html{
      font-weight: 400;
 }
 
+
+.cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+

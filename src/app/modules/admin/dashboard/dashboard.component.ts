@@ -208,10 +208,12 @@ openAddCustomerDetails(booking: Booking) {
   (document.activeElement as HTMLElement)?.blur();
 
   const dialogRef = this.dialog.open(AddCustomerDetailDialogComponent, {
+     panelClass: 'promo-dialog',
     width: '95%',
     maxWidth: '420px',
-    autoFocus: true,          // 👈 important
+    autoFocus: false,          // 👈 important
     restoreFocus: true,       // 👈 important
+     backdropClass: 'blur-backdrop',
     data: {
       booking,
       mode: 'add'

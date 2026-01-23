@@ -21,214 +21,219 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-  loadingDashboard:boolean = true;
+   loadingDashboard: boolean = true;
   private router = inject(Router);
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
   private bidService = inject(BidService);
   private snackBar = inject(MatSnackBar);
-  private dialog = inject(MatDialog)
+  private dialog = inject(MatDialog);
+
   myBidsWithBooking: Array<{
     bid: Bid;
     booking: Booking | null;
   }> = [];
 
-
   driver!: Driver;
 
   openBookings: Booking[] = [];
-myAcceptedBookings: Array<{
-  booking: Booking;
-  bid: Bid;
-}> = [];
+  myAcceptedBookings: Array<{
+    booking: Booking;
+    bid: Bid;
+  }> = [];
 
   myBids: Bid[] = [];
   myBidBookingIds: string[] = [];
 
   activeTab: 'available' | 'bids' | 'accepted' = 'available';
 
-  
-async ngOnInit() {
-  const raw = localStorage.getItem('driver');
-  if (!raw) {
-    this.router.navigate([APP_ROUTES.DRIVER.LOGIN]);
-    return;
+  // Toggle states for cards
+  expandedCards: Set<string> = new Set();
+
+toggleCard(cardId: string): void {
+  if (this.expandedCards.has(cardId)) {
+    this.expandedCards.delete(cardId);
+  } else {
+    this.expandedCards.add(cardId);
+
+    // 👇 open hote hi card ke top pe scroll
+    setTimeout(() => {
+      document.getElementById(cardId)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 50);
   }
-
-  const cached = JSON.parse(raw);
-
-  // 🔴 ALWAYS FETCH FRESH DRIVER FROM DB
-  const freshDriver = await this.driverService.getDriver(cached.phone);
-
-  if (!freshDriver) {
-    this.logout();
-    return;
-  }
-
-  this.driver = freshDriver;
-
-  // 🔄 update local cache
-  localStorage.setItem('driver', JSON.stringify(freshDriver));
-
-  this.refreshBookings();
 }
 
 
-async refreshBookings() {
-  this.loadingDashboard = true;   // 🔴 START LOADING
+  isCardExpanded(cardId: string): boolean {
+    return this.expandedCards.has(cardId);
+  }
 
-  try {
-    // 🔹 fetch everything FIRST
-    const [dashboard, myBids] = await Promise.all([
-      this.bookingService.getDashboardData(this.driver.phone),
-      this.bidService.getMyBids(this.driver.phone),
-    ]);
+  async ngOnInit() {
+    const raw = localStorage.getItem('driver');
+    if (!raw) {
+      this.router.navigate([APP_ROUTES.DRIVER.LOGIN]);
+      return;
+    }
 
-    // 🔹 prepare accepted bookings
-    const accepted: Array<{ booking: Booking; bid: Bid }> = [];
+    const cached = JSON.parse(raw);
 
-    for (const booking of dashboard.mine) {
-      const acceptedBid = myBids.find(
-        b => b.bookingId === booking.id && b.status === 'accepted'
-      );
-      if (acceptedBid) {
-        accepted.push({ booking, bid: acceptedBid });
+    // 🔴 ALWAYS FETCH FRESH DRIVER FROM DB
+    const freshDriver = await this.driverService.getDriver(cached.phone);
+
+    if (!freshDriver) {
+      this.logout();
+      return;
+    }
+
+    this.driver = freshDriver;
+
+    // 🔄 update local cache
+    localStorage.setItem('driver', JSON.stringify(freshDriver));
+
+    this.refreshBookings();
+  }
+
+  async refreshBookings() {
+    this.loadingDashboard = true; // 🔴 START LOADING
+
+    try {
+      // 🔹 fetch everything FIRST
+      const [dashboard, myBids] = await Promise.all([
+        this.bookingService.getDashboardData(this.driver.phone),
+        this.bidService.getMyBids(this.driver.phone),
+      ]);
+
+      // 🔹 prepare accepted bookings
+      const accepted: Array<{ booking: Booking; bid: Bid }> = [];
+
+      for (const booking of dashboard.mine) {
+        const acceptedBid = myBids.find(
+          (b) => b.bookingId === booking.id && b.status === 'accepted'
+        );
+        if (acceptedBid) {
+          accepted.push({ booking, bid: acceptedBid });
+        }
       }
+
+      // 🔹 prepare bids with booking
+      const bidsWithBooking: Array<{ bid: Bid; booking: Booking | null }> = [];
+
+      for (const bid of myBids) {
+        const booking = await this.bookingService.getBookingById(bid.bookingId);
+        bidsWithBooking.push({ bid, booking });
+      }
+
+      // ✅ ATOMIC COMMIT (ONLY ONE UI UPDATE)
+      this.openBookings = dashboard.open;
+      this.myBids = myBids;
+      this.myBidBookingIds = myBids.map((b) => b.bookingId);
+      this.myAcceptedBookings = accepted;
+      this.myBidsWithBooking = bidsWithBooking;
+    } catch (e) {
+      console.error('Dashboard refresh error', e);
+    } finally {
+      this.loadingDashboard = false; // 🟢 END LOADING
     }
-
-    // 🔹 prepare bids with booking
-    const bidsWithBooking: Array<{ bid: Bid; booking: Booking | null }> = [];
-
-    for (const bid of myBids) {
-      const booking = await this.bookingService.getBookingById(bid.bookingId);
-      bidsWithBooking.push({ bid, booking });
-    }
-
-    // ✅ ATOMIC COMMIT (ONLY ONE UI UPDATE)
-    this.openBookings = dashboard.open;
-    this.myBids = myBids;
-    this.myBidBookingIds = myBids.map(b => b.bookingId);
-    this.myAcceptedBookings = accepted;
-    this.myBidsWithBooking = bidsWithBooking;
-
-  } catch (e) {
-    console.error('Dashboard refresh error', e);
-  } finally {
-    this.loadingDashboard = false;  // 🟢 END LOADING
   }
-}
 
+  async toggleOnline() {
+    // toggle status
+    this.driver.onlineStatus = !this.driver.onlineStatus;
 
-async toggleOnline() {
-  // toggle status
-  this.driver.onlineStatus = !this.driver.onlineStatus;
+    // save locally
+    localStorage.setItem('driver', JSON.stringify(this.driver));
 
-  // save locally
-  localStorage.setItem('driver', JSON.stringify(this.driver));
+    try {
+      await this.driverService.updateOnlineStatus(
+        this.driver.phone,
+        this.driver.onlineStatus
+      );
 
-  try {
-    await this.driverService.updateOnlineStatus(
-      this.driver.phone,
-      this.driver.onlineStatus
-    );
+      // ✅ SNACKBAR MESSAGE
+      this.snackBar.open(
+        this.driver.onlineStatus
+          ? 'You are now online.'
+          : 'You are now offline.',
+        'OK',
+        {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+        }
+      );
+    } catch (error) {
+      console.error('Status update failed', error);
 
-    // ✅ SNACKBAR MESSAGE
-    this.snackBar.open(
-      this.driver.onlineStatus
-        ? 'You are now online.'
-        : 'You are now offline.',
-      'OK',
-      {
+      // ❌ ERROR SNACKBAR
+      this.snackBar.open('Failed to update status. Try again.', 'Retry', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'bottom',
-      }
-    );
-    
-  } catch (error) {
-    console.error('Status update failed', error);
-
-    // ❌ ERROR SNACKBAR
-    this.snackBar.open('Failed to update status. Try again.', 'Retry', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom',
-    });
+      });
+    }
   }
-}
-
 
   navigateToSetLocation() {
     this.router.navigate([
       APP_ROUTES.DRIVER.BASE,
-      APP_ROUTES.DRIVER.SET_LOCATION
+      APP_ROUTES.DRIVER.SET_LOCATION,
     ]);
   }
 
   navigateToBookingDetails(id: string) {
     if (!id) return;
-    this.router.navigate([
-      APP_ROUTES.DRIVER.BASE,
-      'booking',
-      id
-    ]);
+    this.router.navigate([APP_ROUTES.DRIVER.BASE, 'booking', id]);
   }
 
   logout() {
     localStorage.removeItem('driver');
-    this.router.navigate([
-      APP_ROUTES.DRIVER.BASE,
-      APP_ROUTES.DRIVER.LOGIN
-    ]);
+    this.router.navigate([APP_ROUTES.DRIVER.BASE, APP_ROUTES.DRIVER.LOGIN]);
   }
 
- editBid(bid: Bid) {
-  this.router.navigate(
-    [
-      APP_ROUTES.DRIVER.BASE,
-      'booking',
-      bid.bookingId
-    ],
-    {
-      queryParams: {
-        bidAmount: bid.driverBidIncome
+  editBid(bid: Bid) {
+    this.router.navigate(
+      [APP_ROUTES.DRIVER.BASE, 'booking', bid.bookingId],
+      {
+        queryParams: {
+          bidAmount: bid.driverBidIncome,
+        },
       }
-    }
-  );
-}
+    );
+  }
 
-async deleteBid(bidId: string) {
-  const ok = confirm('Are you sure you want to delete this bid?');
-  if (!ok) return;
+  async deleteBid(bidId: string) {
+    const ok = confirm('Are you sure you want to delete this bid?');
+    if (!ok) return;
 
-  await this.bidService.deleteBid(bidId);
+    await this.bidService.deleteBid(bidId);
 
-  // ⚡ instant UX (optimistic)
-  this.myBids = this.myBids.filter(b => b.id !== bidId);
-  this.myBidBookingIds = this.myBids.map(b => b.bookingId);
-  this.myBidsWithBooking = this.myBidsWithBooking.filter(
-    x => x.bid.id !== bidId
-  );
+    // ⚡ instant UX (optimistic)
+    this.myBids = this.myBids.filter((b) => b.id !== bidId);
+    this.myBidBookingIds = this.myBids.map((b) => b.bookingId);
+    this.myBidsWithBooking = this.myBidsWithBooking.filter(
+      (x) => x.bid.id !== bidId
+    );
 
-  // optional full refresh (safe)
-  await this.refreshBookings();
-}
+    // optional full refresh (safe)
+    await this.refreshBookings();
+  }
 
-openCustomerPdf(url: string) {
-  const previewUrl = url.replace(
-    '/raw/upload/',
-    '/raw/upload/fl_inline/'
-  );
-  window.open(previewUrl, '_blank');
-}
+  openCustomerPdf(url: string) {
+    const previewUrl = url.replace('/raw/upload/', '/raw/upload/fl_inline/');
+    window.open(previewUrl, '_blank');
+  }
 
-
-viewCustomerDetails(details: any) {
-  this.dialog.open(ViewCustomerDetailDialogComponent, {
-    width: '90%',
-    maxWidth: '420px',
-    data: details
-  });
-}
-
+  viewCustomerDetails(details: any) {
+    this.dialog.open(ViewCustomerDetailDialogComponent, {
+       panelClass: 'promo-dialog',
+      width: '90%',
+      maxWidth: '420px',
+      data: details,
+       backdropClass: 'blur-backdrop',
+    autoFocus: false
+    });
+  }
 }

@@ -26,10 +26,10 @@ export const routes: Routes = [
 
    {
     path: '',
-    redirectTo: `${APP_ROUTES.ADMIN.BASE}/${APP_ROUTES.ADMIN.LOGIN}`,
+    redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}`,
     pathMatch: 'full'
   },
 
   // 404 fallback (optional)
-  // { path: '**', redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}` }
+  { path: '**', redirectTo: `${APP_ROUTES.DRIVER.BASE}/${APP_ROUTES.DRIVER.LOGIN}` }
 ];
