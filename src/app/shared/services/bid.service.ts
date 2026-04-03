@@ -166,4 +166,9 @@ async deleteBidsByBookingId(bookingId: string) {
   await Promise.all(deletes);
 }
 
+async updateBid(bidId: string, data: any) {
+  const ref = doc(this.fs, 'bids', bidId);
+  return updateDoc(ref, data);
+}
+
 }

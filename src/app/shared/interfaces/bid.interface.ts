@@ -16,4 +16,10 @@ export interface Bid {
 
   status: 'pending' | 'accepted' | 'closed';
   timestamp: any;
+
+   // 🔥 ADD THIS
+  driverPaymentStatus?: 'pending' | 'paid';
+  driverPaymentAmount?: number;
+  driverPaymentAt?: any;
+  razorpayPaymentId?: string;
 }

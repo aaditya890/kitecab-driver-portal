@@ -16,12 +16,12 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ReactiveFormsModule,NgClass,MatDialogModule],
+  imports: [ReactiveFormsModule, NgClass, MatDialogModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-   loadingDashboard: boolean = true;
+  loadingDashboard: boolean = true;
   private router = inject(Router);
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
@@ -50,21 +50,21 @@ export class DashboardComponent {
   // Toggle states for cards
   expandedCards: Set<string> = new Set();
 
-toggleCard(cardId: string): void {
-  if (this.expandedCards.has(cardId)) {
-    this.expandedCards.delete(cardId);
-  } else {
-    this.expandedCards.add(cardId);
+  toggleCard(cardId: string): void {
+    if (this.expandedCards.has(cardId)) {
+      this.expandedCards.delete(cardId);
+    } else {
+      this.expandedCards.add(cardId);
 
-    // 👇 open hote hi card ke top pe scroll
-    setTimeout(() => {
-      document.getElementById(cardId)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }, 50);
+      // 👇 open hote hi card ke top pe scroll
+      setTimeout(() => {
+        document.getElementById(cardId)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 50);
+    }
   }
-}
 
 
   isCardExpanded(cardId: string): boolean {
@@ -137,6 +137,68 @@ toggleCard(cardId: string): void {
     } finally {
       this.loadingDashboard = false; // 🟢 END LOADING
     }
+  }
+
+  async payNow(item: { booking: Booking; bid: Bid }) {
+    const amount = item.bid.finalCommission * 100; // paise
+
+    const options: any = {
+      key: 'YOUR_KEY_ID', // 🔥 replace
+      amount: amount,
+      currency: 'INR',
+      name: 'KiteCab Taxi',
+      description: 'Driver Commission Payment',
+
+      handler: async (response: any) => {
+        try {
+          // ✅ PAYMENT SUCCESS → update DB
+
+          await this.bidService.updateBid(item.bid.id!, {
+            driverPaymentStatus: 'paid',
+            driverPaymentAmount: item.bid.finalCommission,
+            driverPaymentAt: new Date(),
+            razorpayPaymentId: response.razorpay_payment_id
+          });
+
+          await this.bookingService.updateBooking(item.booking.id!, {
+            customerDetails: {
+              name: item.booking.customerDetails?.name || '',
+              phone: item.booking.customerDetails?.phone || '',
+              pickupAddress: item.booking.customerDetails?.pickupAddress || '',
+              dropAddress: item.booking.customerDetails?.dropAddress || '',
+              date: item.booking.customerDetails?.date || '',
+              time: item.booking.customerDetails?.time || '',
+              note: item.booking.customerDetails?.note || '',
+              addedAt: item.booking.customerDetails?.addedAt || new Date(),
+              addedBy: "KITECAB TAXI SERVICE",
+              isHidden: false,
+            }
+          });
+
+
+          this.snackBar.open('Payment Successful ✅', 'OK', {
+            duration: 3000
+          });
+
+          await this.refreshBookings();
+
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      prefill: {
+        name: this.driver.name,
+        contact: this.driver.phone,
+      },
+
+      theme: {
+        color: '#4f46e5'
+      }
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
   }
 
   async toggleOnline() {
@@ -228,12 +290,14 @@ toggleCard(cardId: string): void {
 
   viewCustomerDetails(details: any) {
     this.dialog.open(ViewCustomerDetailDialogComponent, {
-       panelClass: 'promo-dialog',
+      panelClass: 'promo-dialog',
       width: '90%',
       maxWidth: '420px',
       data: details,
-       backdropClass: 'blur-backdrop',
-    autoFocus: false
+      backdropClass: 'blur-backdrop',
+      autoFocus: false
     });
   }
+
+
 }
