@@ -12,6 +12,7 @@ import { NgClass } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ViewCustomerDetailDialogComponent } from '../../admin/view-customer-detail-dialog/view-customer-detail-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PaymentService } from '../../../shared/services/payment.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 export class DashboardComponent {
   loadingDashboard: boolean = true;
   private router = inject(Router);
+  private paymentService = inject(PaymentService);
   private bookingService = inject(BookingService);
   private driverService = inject(DriverService);
   private bidService = inject(BidService);
@@ -139,67 +141,63 @@ export class DashboardComponent {
     }
   }
 
-  async payNow(item: { booking: Booking; bid: Bid }) {
-    const amount = item.bid.finalCommission * 100; // paise
+  async payNow(item: any) {
+  try {
+    const bid = item.bid;
+    const booking = item.booking;
 
+    if (!bid || !booking) return;
+
+    // 🔹 1. Create order (Firebase function)
+    const res: any = await this.paymentService.createOrder({
+      amount: bid.finalCommission,
+      bidId: bid.id,
+      bookingId: booking.id,
+    });
+
+    const order = res.data;
+
+    // 🔹 2. Razorpay open
     const options: any = {
-      key: 'YOUR_KEY_ID', // 🔥 replace
-      amount: amount,
+      key: 'rzp_test_SYtWbb5sgpzsj2',
+      amount: order.amount,
       currency: 'INR',
-      name: 'KiteCab Taxi',
+      name: 'KiteCab',
       description: 'Driver Commission Payment',
+      order_id: order.orderId,
 
       handler: async (response: any) => {
-        try {
-          // ✅ PAYMENT SUCCESS → update DB
-
-          await this.bidService.updateBid(item.bid.id!, {
-            driverPaymentStatus: 'paid',
-            driverPaymentAmount: item.bid.finalCommission,
-            driverPaymentAt: new Date(),
-            razorpayPaymentId: response.razorpay_payment_id
-          });
-
-          await this.bookingService.updateBooking(item.booking.id!, {
-            customerDetails: {
-              name: item.booking.customerDetails?.name || '',
-              phone: item.booking.customerDetails?.phone || '',
-              pickupAddress: item.booking.customerDetails?.pickupAddress || '',
-              dropAddress: item.booking.customerDetails?.dropAddress || '',
-              date: item.booking.customerDetails?.date || '',
-              time: item.booking.customerDetails?.time || '',
-              note: item.booking.customerDetails?.note || '',
-              addedAt: item.booking.customerDetails?.addedAt || new Date(),
-              addedBy: "KITECAB TAXI SERVICE",
-              isHidden: false,
-            }
-          });
-
-
-          this.snackBar.open('Payment Successful ✅', 'OK', {
-            duration: 3000
-          });
-
-          await this.refreshBookings();
-
-        } catch (e) {
-          console.error(e);
-        }
-      },
-
-      prefill: {
-        name: this.driver.name,
-        contact: this.driver.phone,
+        await this.verifyPayment(response, bid, booking);
       },
 
       theme: {
-        color: '#4f46e5'
+        color: '#2563EB'
       }
     };
 
     const rzp = new (window as any).Razorpay(options);
     rzp.open();
+
+  } catch (err) {
+    console.error('Payment start failed', err);
   }
+}
+
+async verifyPayment(response: any, bid: any, booking: any) {
+  try {
+    await this.paymentService.verifyPayment({
+      ...response,
+      bidId: bid.id,
+      bookingId: booking.id,
+    });
+
+    // 🔥 refresh UI
+    await this.refreshBookings();
+
+  } catch (err) {
+    console.error('Verification failed', err);
+  }
+}
 
   async toggleOnline() {
     // toggle status

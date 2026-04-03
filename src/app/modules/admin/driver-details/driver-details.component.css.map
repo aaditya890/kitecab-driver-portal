@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"driver-details.component.css"}
+{"version":3,"sources":["driver-details.component.scss","driver-details.component.css"],"names":[],"mappings":"AAAA,sBAAA;AACA;EACE;IACE,UAAA;IACA,2BAAA;ECCF;EDCA;IACE,UAAA;IACA,wBAAA;ECCF;AACF;ADEA,sCAAA;AAEE;;EAEE,gCAAA;ACDJ","file":"driver-details.component.css"}

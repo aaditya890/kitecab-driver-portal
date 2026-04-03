@@ -1,1 +1,16 @@
-/*# sourceMappingURL=driver-details.component.css.map */
+/* Smooth animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Optional: Add animations to cards */
+:host ::ng-deep .bg-gradient-to-br,
+:host ::ng-deep .bg-slate-900\/50 {
+  animation: slideIn 0.3s ease-out;
+}/*# sourceMappingURL=driver-details.component.css.map */
