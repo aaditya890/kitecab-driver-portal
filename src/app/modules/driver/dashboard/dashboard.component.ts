@@ -140,64 +140,49 @@ export class DashboardComponent {
       this.loadingDashboard = false; // 🟢 END LOADING
     }
   }
+payNow(item: any){}
+  // async payNow(item: any) {
+  //   try {
+  //     const bid = item.bid;
+  //     const booking = item.booking;
 
-  async payNow(item: any) {
-  try {
-    const bid = item.bid;
-    const booking = item.booking;
+  //     if (!bid || !booking) return;
 
-    if (!bid || !booking) return;
+  //     // 🔹 1. Create order (Firebase function)
+  //     const res: any = await this.paymentService.createOrder({
+  //       amount: bid.finalCommission,
+  //       bidId: bid.id,
+  //       bookingId: booking.id,
+  //     });
 
-    // 🔹 1. Create order (Firebase function)
-    const res: any = await this.paymentService.createOrder({
-      amount: bid.finalCommission,
-      bidId: bid.id,
-      bookingId: booking.id,
-    });
+  //     const order = res.data;
 
-    const order = res.data;
+  //     // 🔹 2. Razorpay open
+  //     const options: any = {
+  //       key: 'rzp_test_SYtWbb5sgpzsj2',
+  //       amount: order.amount,
+  //       currency: 'INR',
+  //       name: 'KiteCab',
+  //       description: 'Driver Commission Payment',
+  //       order_id: order.orderId,
 
-    // 🔹 2. Razorpay open
-    const options: any = {
-      key: 'rzp_test_SYtWbb5sgpzsj2',
-      amount: order.amount,
-      currency: 'INR',
-      name: 'KiteCab',
-      description: 'Driver Commission Payment',
-      order_id: order.orderId,
+  //       handler: async (response: any) => {
+  //         await this.verifyPayment(response, bid, booking);
+  //       },
 
-      handler: async (response: any) => {
-        await this.verifyPayment(response, bid, booking);
-      },
+  //       theme: {
+  //         color: '#2563EB'
+  //       }
+  //     };
 
-      theme: {
-        color: '#2563EB'
-      }
-    };
+  //     const rzp = new (window as any).Razorpay(options);
+  //     rzp.open();
 
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
+  //   } catch (err) {
+  //     console.error('Payment start failed', err);
+  //   }
+  // }
 
-  } catch (err) {
-    console.error('Payment start failed', err);
-  }
-}
-
-async verifyPayment(response: any, bid: any, booking: any) {
-  try {
-    await this.paymentService.verifyPayment({
-      ...response,
-      bidId: bid.id,
-      bookingId: booking.id,
-    });
-
-    // 🔥 refresh UI
-    await this.refreshBookings();
-
-  } catch (err) {
-    console.error('Verification failed', err);
-  }
-}
 
   async toggleOnline() {
     // toggle status

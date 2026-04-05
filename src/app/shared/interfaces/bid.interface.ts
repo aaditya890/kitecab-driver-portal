@@ -21,5 +21,4 @@ export interface Bid {
   driverPaymentStatus?: 'pending' | 'paid';
   driverPaymentAmount?: number;
   driverPaymentAt?: any;
-  razorpayPaymentId?: string;
 }
